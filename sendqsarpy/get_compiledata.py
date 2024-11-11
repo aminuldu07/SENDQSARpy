@@ -121,8 +121,6 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
         # Close the database connection
         db_connection.close()
 
-        # Further data manipulation can be added here...
-
     elif not fake_study and use_xpt_file:
         # Read XPT files using pandas
         bw = pd.read_sas(os.path.join(path, 'bw.xpt'), format='xport')
@@ -133,7 +131,6 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
         pp = pd.read_sas(os.path.join(path, 'pp.xpt'), format='xport')
         pooldef = pd.read_sas(os.path.join(path, 'pooldef.xpt'), format='xport')
 
-        # Further data manipulation can be added here...
 
     # Compilation of DM Data
     compile_data = pd.DataFrame(columns=['STUDYID', 'Species', 'USUBJID', 'SEX', 'ARMCD', 'SETCD'])
@@ -153,6 +150,8 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
 
     # Create DM Data
     studyid_unique = ts['STUDYID'].unique()[0]
+    
+    # Create DM Data    
     dm_data = pd.DataFrame({
         'STUDYID': [studyid_unique] * len(dm),
         'Species': [species] * len(dm),
