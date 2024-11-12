@@ -1,9 +1,9 @@
 import sqlite3
 import pandas as pd
 import numpy as np
-import re
+#import re
 import os
-from pathlib import Path
+#from pathlib import Path
 
 def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=False):
     # Convert studyid to string
