@@ -52,37 +52,52 @@ def get_bw_score(studyid=None,
     bw['VISITDY'] = pd.to_numeric(bw['VISITDY'], errors='coerce')
     bw['BWDY'] = pd.to_numeric(bw['BWDY'], errors='coerce')
 
+    #.................. "BodyWeight_zScore" .....calculation........
+    #................... Initial BW weight calculation..............
     # Initialize data frames
     StudyInitialWeights = pd.DataFrame(columns=["STUDYID", "USUBJID", "BWSTRESN", "VISITDY"])
+    
+    # Initialize dataframe for unmatched USUBJIDs
     UnmatchedUSUBJIDs = pd.DataFrame(columns=["USUBJID"])
 
+    # Get unique USUBJIDs in the current study
     unique_subjids = bw['USUBJID'].unique()
 
     for currentUSUBJID in unique_subjids:
+        # Initialize an empty dataframe for this subject
+        
+        # Data (all rows) for the current USUBJID
         subj_data = bw[bw['USUBJID'] == currentUSUBJID].copy()
+        
+        # for any row if  VISITDY column data is empty replace it with the corresponding values from BWDY column
         subj_data['VISITDY'] = subj_data['VISITDY'].fillna(subj_data['BWDY'])
 
+        # 1. Check if VISITDY == 1 is present
         SubjectInitialWeight = subj_data[subj_data['VISITDY'] == 1][["STUDYID", "USUBJID", "BWSTRESN", "VISITDY"]]
-
+        
+        # 2. If no initial weight with VISITDY == 1,  try VISITDY < 0
         if SubjectInitialWeight.empty:
             negative_visits = subj_data[subj_data['VISITDY'] < 0]
             if not negative_visits.empty:
                 closest_row = negative_visits.loc[(negative_visits['VISITDY'].abs()).idxmin()]
                 SubjectInitialWeight = closest_row[["STUDYID", "USUBJID", "BWSTRESN", "VISITDY"]].to_frame().T
-
+                
+        # 3. If no initial weight with VISITDY == 1 VISITDY < 0 , try 1<VISITDY<=5
         if SubjectInitialWeight.empty:
             five_visitdy = subj_data[(subj_data['VISITDY'] > 1) & (subj_data['VISITDY'] <= 5)]
             if not five_visitdy.empty:
                 closest_row_five = five_visitdy.loc[five_visitdy['VISITDY'].idxmin()]
                 SubjectInitialWeight = closest_row_five[["STUDYID", "USUBJID", "BWSTRESN", "VISITDY"]].to_frame().T
-
+                
+        # 4. If no rows, if VISITDY  >5 , set BWSTRESN value 0
         if SubjectInitialWeight.empty:
             null_visitdy_large_bw = subj_data[subj_data['VISITDY'] > 5]
             if not null_visitdy_large_bw.empty:
                 null_visitdy_large_bw['BWSTRESN'] = 0
                 closest_row_null_visitdy = null_visitdy_large_bw.loc[null_visitdy_large_bw['VISITDY'].idxmin()]
                 SubjectInitialWeight = closest_row_null_visitdy[["STUDYID", "USUBJID", "BWSTRESN", "VISITDY"]].to_frame().T
-
+        
+        # If SubjectInitialWeight is still empty, add currentUSUBJID to UnmatchedUSUBJIDs
         if SubjectInitialWeight.empty:
             UnmatchedUSUBJIDs = UnmatchedUSUBJIDs.append({"USUBJID": currentUSUBJID}, ignore_index=True)
 
@@ -145,29 +160,47 @@ def get_bw_score(studyid=None,
 # Example usage
 # get_bw_score(studyid="example_studyid", path_db="path_to_database_or_xpt_file")
 
-# Later in the script, where you want to call the function:
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+# # Later in the script, where you want to call the function:
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
 
-# Call the function
-fake_T_xpt_F_compile_data = get_bw_score(studyid="28738", path_db = db_path, fake_study=True, use_xpt_file=False)
+# # Call the function
+# fake_T_xpt_F_compile_data = get_bw_score(studyid="28738",
+#                                          path_db=db_path, 
+#                                          fake_study=True, 
+#                                          use_xpt_file=False, 
+#                                          master_compiledata=None, 
+#                                          return_individual_scores=False, 
+#                                          return_zscore_by_USUBJID=False)
+   
+      
+    #studyid="28738", path_db = db_path, fake_study=True, use_xpt_file=False)
 #(db_path, selected_studies)
 
 # Later in the script, where you want to call the function:
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
 
 # Call the function
-fake_T_xpt_T_compile_data = get_bw_score(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
+fake_T_xpt_T_compile_data = get_bw_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
-# Later in the script, where you want to call the function:
-db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
-#selected_studies = "28738"  # Example list of selected studies
 
-# Call the function
-real_sqlite_compile_data = get_bw_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
+# #(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
+
+# # Later in the script, where you want to call the function:
+# db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
+# #selected_studies = "28738"  # Example list of selected studies
+
+# # Call the function
+# real_sqlite_compile_data = get_bw_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
 
 
-# Later in the script, where you want to call the function:
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+# # Later in the script, where you want to call the function:
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
 
-# Call the function
-real_xpt_compile_data = get_bw_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
+# # Call the function
+# real_xpt_compile_data = get_bw_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
