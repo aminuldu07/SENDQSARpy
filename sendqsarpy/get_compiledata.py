@@ -293,11 +293,13 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
       dose_ranking = pd.concat([dose_ranking, highest_data], ignore_index=True)
      elif len(highest_data) > 1:
       selected_highest = highest_data[highest_data['row_state'] == 'old_row'].head(1)
-      if len(selected_highest > 0):
+      #if len(selected_highest > 0):
+      if not selected_highest.empty:
        dose_ranking = pd.concat([dose_ranking, selected_highest], ignore_index=True)
       else:
        selected_highest = highest_data[highest_data['row_state'] == 'new_row'].head(1)
-       if len(selected_highest> 0):
+       #if len(selected_highest> 0):
+       if not selected_highest.empty:
         dose_ranking = pd.concat([dose_ranking, selected_highest], ignore_index=True)
       
         # if not selected_highest.empty:
@@ -360,7 +362,7 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
     # )
 
     # Step 7: Merging "DOSE_RANKED_selected_rows" and "cleaned_CompileData"
-    dose_rank_comp_data = pd.merge(cleaned_compile_data, DOSE_RANKED_selected_rows, on=['STUDYID', 'SETCD'])
+    dose_rank_comp_data = pd.merge(cleaned_compile_data, dose_ranked_selected_rows, on=['STUDYID', 'SETCD'])
 
     # Step 8: Rename and select specific columns
     master_compiledata1 = dose_rank_comp_data[['STUDYID', 'USUBJID', 'Species', 'SEX', 'DOSE_RANKING', 'SETCD']]
@@ -368,7 +370,7 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
     # Step 9: Rename "DOSE_RANKING" column to "ARMCD"
     master_compiledata = master_compiledata1.rename(columns={'DOSE_RANKING': 'ARMCD'})
 
-    return compile_data
+    return master_compiledata
 
 
 
