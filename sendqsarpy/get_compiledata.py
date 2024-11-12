@@ -133,7 +133,34 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
         pp = pd.read_sas(os.path.join(path, 'pp.xpt'), format='xport')
         pooldef = pd.read_sas(os.path.join(path, 'pooldef.xpt'), format='xport')
 
+    # Decode all object columns to UTF-8
+    for col in bw.select_dtypes(include=['object']):
+     bw[col] = bw[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
+     
+    # Decode all object columns to UTF-8
+    for col in dm.select_dtypes(include=['object']):
+     dm[col] = dm[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
+     
+     # Decode all object columns to UTF-8
+     for col in ds.select_dtypes(include=['object']):
+      ds[col] = ds[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
 
+    # Decode all object columns to UTF-8
+    for col in ts.select_dtypes(include=['object']):
+     ts[col] = ts[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
+     
+    # Decode all object columns to UTF-8
+    for col in tx.select_dtypes(include=['object']):
+     tx[col] = tx[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
+     
+    # Decode all object columns to UTF-8
+    for col in pp.select_dtypes(include=['object']):
+     pp[col] = pp[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
+     
+    # Decode all object columns to UTF-8
+    for col in pooldef.select_dtypes(include=['object']):
+     pooldef[col] = pooldef[col].apply(lambda x: x.decode('iso-8859-1', errors='ignore') if isinstance(x, bytes) else x)
+     
     # Compilation of DM Data
     compile_data = pd.DataFrame(columns=['STUDYID', 'Species', 'USUBJID', 'SEX', 'ARMCD', 'SETCD'])
 
@@ -247,8 +274,8 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
     clean_pattern = r";|\||-|/|:|,"
 
     # Step 4: Split and expand the TXVAL column, and add row_state
-    cleaned_compile_data_filtered_tx['is_split'] = cleaned_compile_data_filtered_tx['TXVAL'].str.contains(clean_pattern)
-    cleaned_compile_data_filtered_tx['TXVAL'] = cleaned_compile_data_filtered_tx['TXVAL'].str.split(clean_pattern)
+    cleaned_compile_data_filtered_tx.loc[:,'is_split'] = cleaned_compile_data_filtered_tx['TXVAL'].str.contains(clean_pattern)
+    cleaned_compile_data_filtered_tx.loc[:,'TXVAL'] = cleaned_compile_data_filtered_tx['TXVAL'].str.split(clean_pattern)
     clean_tx_expanded = cleaned_compile_data_filtered_tx.explode('TXVAL')
     clean_tx_expanded['TXVAL'] = pd.to_numeric(clean_tx_expanded['TXVAL'], errors='coerce')
     clean_tx_expanded['row_state'] = np.where(clean_tx_expanded['is_split'], 'new_row', 'old_row')
@@ -373,21 +400,37 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
     return master_compiledata
 
 
+# Later in the script, where you want to call the function:
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
 
+# Call the function
+fake_T_xpt_F_compile_data = get_compile_data(studyid="28738", path_db = db_path, fake_study=True, use_xpt_file=False)
+#(db_path, selected_studies)
 
-# # Later in the script, where you want to call the function:
-# db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\2023-2024_projects\\FAKE_DATABASES\\single_fake_xpt_folder\\FAKE28738"
-# #selected_studies = "28738"  # Example list of selected studies
+# Later in the script, where you want to call the function:
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
 
-# # Call the function
-# compile_data = get_compile_data(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
-# #(db_path, selected_studies)
-
+# Call the function
+fake_T_xpt_T_compile_data = get_compile_data(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
 
 # Later in the script, where you want to call the function:
 db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
 #selected_studies = "28738"  # Example list of selected studies
 
 # Call the function
-compile_data = get_compile_data(studyid="5003635", path_db = db_path, fake_study=False, use_xpt_file=False)
+real_sqlite_compile_data = get_compile_data(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
+
+
+# Later in the script, where you want to call the function:
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+
+# Call the function
+real_xpt_compile_data = get_compile_data(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
+
+
+
+
+
+
+
 #(db_path, selected_studies)
