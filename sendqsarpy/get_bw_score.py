@@ -7,7 +7,7 @@ Created on Tue Nov 12 09:03:58 2024
 
 import sqlite3
 import pandas as pd
-import numpy as np
+#import numpy as np
 import pyreadstat
 
 def get_bw_score(studyid=None,
@@ -28,16 +28,42 @@ def get_bw_score(studyid=None,
         query_result = pd.read_sql_query(query_statement, db_connection, params=(studyid,))
         return query_result
 
-    if use_xpt_file:
-        # Read data from .xpt files
-        bw, meta = pyreadstat.read_xport(f"{path}/bw.xpt")
-    else:
-        # Connect to the SQLite database
+    if fake_study and not use_xpt_file:
+        # Connect to SQLite database
         db_connection = sqlite3.connect(path)
-        # Fetch data for required domains
+
+        # Fetch data for 'dm' and 'ts' domains
         bw = fetch_domain_data(db_connection, 'bw', studyid)
+        
         # Close the database connection
         db_connection.close()
+        
+    elif fake_study and use_xpt_file:
+        #if use_xpt_file:
+         # Read data from .xpt files
+         bw, meta = pyreadstat.read_xport(f"{path}/bw.xpt")
+    
+    elif not fake_study and not use_xpt_file:
+        # Connect to SQLite database
+        db_connection = sqlite3.connect(path)
+
+        # Fetch data for 'dm' and 'ts' domains
+        bw = fetch_domain_data(db_connection, 'bw', studyid)
+        
+        # Close the database connection
+        db_connection.close()
+        
+    elif not fake_study and use_xpt_file:
+        # Read data from .xpt files
+        bw, meta = pyreadstat.read_xport(f"{path}/bw.xpt")
+        
+     # #else:
+     #    # Connect to the SQLite database
+     #    db_connection = sqlite3.connect(path)
+     #    # Fetch data for required domains
+     #    bw = fetch_domain_data(db_connection, 'bw', studyid)
+     #    # Close the database connection
+     #    db_connection.close()
 
     # Check for the existence of BWDY and VISITDY columns
     if "BWDY" not in bw.columns and "VISITDY" not in bw.columns:
@@ -157,20 +183,23 @@ def get_bw_score(studyid=None,
     # Return results as needed
     return StudyInitialWeights, StudyBodyWeights, unique_StudyBodyWeights_USUBJID
 
-# Example usage
-# get_bw_score(studyid="example_studyid", path_db="path_to_database_or_xpt_file")
 
-# # Later in the script, where you want to call the function:
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
 
-# # Call the function
-# fake_T_xpt_F_compile_data = get_bw_score(studyid="28738",
-#                                          path_db=db_path, 
-#                                          fake_study=True, 
-#                                          use_xpt_file=False, 
-#                                          master_compiledata=None, 
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
+
+#Example usage
+#get_bw_score(studyid="28738", path_db="path_to_database_or_xpt_file")
+
+# Later in the script, where you want to call the function:
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+
+# Call the function
+fake_T_xpt_F_compile_data = get_bw_score(studyid="28738",
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=False, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
    
       
     #studyid="28738", path_db = db_path, fake_study=True, use_xpt_file=False)
@@ -189,18 +218,18 @@ fake_T_xpt_T_compile_data = get_bw_score(studyid=None,
                                          return_zscore_by_USUBJID=False)
 
 
-# #(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
+#(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
 
-# # Later in the script, where you want to call the function:
-# db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
-# #selected_studies = "28738"  # Example list of selected studies
+# Later in the script, where you want to call the function:
+db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
+#selected_studies = "28738"  # Example list of selected studies
 
-# # Call the function
-# real_sqlite_compile_data = get_bw_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
+# Call the function
+real_sqlite_compile_data = get_bw_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
 
 
-# # Later in the script, where you want to call the function:
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+# Later in the script, where you want to call the function:
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
 
-# # Call the function
-# real_xpt_compile_data = get_bw_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
+# Call the function
+real_xpt_compile_data = get_bw_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)

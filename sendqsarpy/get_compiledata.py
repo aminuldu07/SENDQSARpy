@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import numpy as np
+import pyreadstat
 #import re
 import os
 #from pathlib import Path
@@ -63,8 +64,12 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
 
     elif fake_study and use_xpt_file:
         # Read XPT files using pandas
-        dm = pd.read_sas(os.path.join(path, 'dm.xpt'), format='xport')
-        ts = pd.read_sas(os.path.join(path, 'ts.xpt'), format='xport')
+        #dm = pd.read_sas(os.path.join(path, 'dm.xpt'), format='xport')
+        #ts = pd.read_sas(os.path.join(path, 'ts.xpt'), format='xport')
+        
+        # Read data from .xpt files using pyreadstat
+        dm, meta = pyreadstat.read_xport(os.path.join(path, 'dm.xpt'))
+        ts, meta = pyreadstat.read_xport(os.path.join(path, 'ts.xpt'))
 
         # Convert to DataFrame
         dm = pd.DataFrame(dm)
@@ -124,14 +129,24 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
         db_connection.close()
 
     elif not fake_study and use_xpt_file:
-        # Read XPT files using pandas
-        bw = pd.read_sas(os.path.join(path, 'bw.xpt'), format='xport')
-        dm = pd.read_sas(os.path.join(path, 'dm.xpt'), format='xport')
-        ds = pd.read_sas(os.path.join(path, 'ds.xpt'), format='xport')
-        ts = pd.read_sas(os.path.join(path, 'ts.xpt'), format='xport')
-        tx = pd.read_sas(os.path.join(path, 'tx.xpt'), format='xport')
-        pp = pd.read_sas(os.path.join(path, 'pp.xpt'), format='xport')
-        pooldef = pd.read_sas(os.path.join(path, 'pooldef.xpt'), format='xport')
+        # # Read XPT files using pandas
+        # bw = pd.read_sas(os.path.join(path, 'bw.xpt'), format='xport')
+        # dm = pd.read_sas(os.path.join(path, 'dm.xpt'), format='xport')
+        # ds = pd.read_sas(os.path.join(path, 'ds.xpt'), format='xport')
+        # ts = pd.read_sas(os.path.join(path, 'ts.xpt'), format='xport')
+        # tx = pd.read_sas(os.path.join(path, 'tx.xpt'), format='xport')
+        # pp = pd.read_sas(os.path.join(path, 'pp.xpt'), format='xport')
+        # pooldef = pd.read_sas(os.path.join(path, 'pooldef.xpt'), format='xport')
+        
+        # Read data from .xpt files using pyreadstat
+        bw, meta = pyreadstat.read_xport(os.path.join(path, 'bw.xpt'))
+        dm, meta = pyreadstat.read_xport(os.path.join(path, 'dm.xpt'), encoding='latin1')
+        ds, meta = pyreadstat.read_xport(os.path.join(path, 'ds.xpt'))
+        ts, meta = pyreadstat.read_xport(os.path.join(path, 'ts.xpt'), encoding='latin1')
+        tx, meta = pyreadstat.read_xport(os.path.join(path, 'tx.xpt'), encoding='latin1')
+        pp, meta = pyreadstat.read_xport(os.path.join(path, 'pp.xpt'))
+        pooldef, meta = pyreadstat.read_xport(os.path.join(path, 'pooldef.xpt'))
+      
 
     # Decode all object columns to UTF-8
     for col in bw.select_dtypes(include=['object']):

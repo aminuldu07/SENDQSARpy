@@ -9,6 +9,7 @@ import os
 import sqlite3
 import pandas as pd
 import pyreadstat
+from get_compiledata import get_compile_data
 
 def get_lb_score(studyid=None, path_db=None, fake_study=False, use_xpt_file=False, 
                  master_compiledata=None, return_individual_scores=False, return_zscore_by_USUBJID=False):
