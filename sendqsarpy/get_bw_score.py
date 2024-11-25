@@ -161,12 +161,11 @@ def get_bw_score(studyid=None,
 
 
 #Example usage
-
 # Later in the script, where you want to call the function:
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
 
 # Call the function
-fake_T_xpt_F_compile_data = get_bw_score(studyid="28738",
+fake_T_xpt_F_bw_score = get_bw_score(studyid="28738",
                                          path_db=db_path, 
                                          fake_study=True, 
                                          use_xpt_file=False, 
@@ -182,7 +181,7 @@ fake_T_xpt_F_compile_data = get_bw_score(studyid="28738",
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
 
 # Call the function
-fake_T_xpt_T_compile_data = get_bw_score(studyid=None,
+fake_T_xpt_T_bw_score = get_bw_score(studyid=None,
                                          path_db=db_path, 
                                          fake_study=True, 
                                          use_xpt_file=True, 
@@ -198,11 +197,11 @@ db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db
 #selected_studies = "28738"  # Example list of selected studies
 
 # Call the function
-real_sqlite_compile_data = get_bw_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
+real_sqlite_bw_score = get_bw_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
 
 
 # Later in the script, where you want to call the function:
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
 
 # Call the function
-real_xpt_compile_data = get_bw_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
+real_xpt_bw_score = get_bw_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
