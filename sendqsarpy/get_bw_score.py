@@ -28,42 +28,16 @@ def get_bw_score(studyid=None,
         query_result = pd.read_sql_query(query_statement, db_connection, params=(studyid,))
         return query_result
 
-    if fake_study and not use_xpt_file:
-        # Connect to SQLite database
-        db_connection = sqlite3.connect(path)
-
-        # Fetch data for 'dm' and 'ts' domains
-        bw = fetch_domain_data(db_connection, 'bw', studyid)
-        
-        # Close the database connection
-        db_connection.close()
-        
-    elif fake_study and use_xpt_file:
-        #if use_xpt_file:
-         # Read data from .xpt files
-         bw, meta = pyreadstat.read_xport(f"{path}/bw.xpt")
-    
-    elif not fake_study and not use_xpt_file:
-        # Connect to SQLite database
-        db_connection = sqlite3.connect(path)
-
-        # Fetch data for 'dm' and 'ts' domains
-        bw = fetch_domain_data(db_connection, 'bw', studyid)
-        
-        # Close the database connection
-        db_connection.close()
-        
-    elif not fake_study and use_xpt_file:
+    if use_xpt_file:
         # Read data from .xpt files
         bw, meta = pyreadstat.read_xport(f"{path}/bw.xpt")
-        
-     # #else:
-     #    # Connect to the SQLite database
-     #    db_connection = sqlite3.connect(path)
-     #    # Fetch data for required domains
-     #    bw = fetch_domain_data(db_connection, 'bw', studyid)
-     #    # Close the database connection
-     #    db_connection.close()
+    else:
+        # Connect to the SQLite database
+        db_connection = sqlite3.connect(path)
+        # Fetch data for required domains
+        bw = fetch_domain_data(db_connection, 'bw', studyid)
+        # Close the database connection
+        db_connection.close()
 
     # Check for the existence of BWDY and VISITDY columns
     if "BWDY" not in bw.columns and "VISITDY" not in bw.columns:
@@ -187,7 +161,6 @@ def get_bw_score(studyid=None,
 
 
 #Example usage
-#get_bw_score(studyid="28738", path_db="path_to_database_or_xpt_file")
 
 # Later in the script, where you want to call the function:
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"

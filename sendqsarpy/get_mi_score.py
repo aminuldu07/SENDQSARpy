@@ -11,6 +11,7 @@ import pyreadstat
 import sqlite3
 import numpy as np
 import re
+from get_compiledata import get_compile_data
 
 def get_mi_score(studyid=None, path_db=None, fake_study=False, use_xpt_file=False, 
                  master_compiledata=None, return_individual_scores=False, 

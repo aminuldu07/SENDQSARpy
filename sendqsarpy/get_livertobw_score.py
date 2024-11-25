@@ -9,6 +9,7 @@ import pandas as pd
 import pyreadstat
 import sqlite3
 import numpy as np
+from get_compiledata import get_compile_data
 
 
 def get_livertobw_score(studyid=None, 
@@ -42,7 +43,7 @@ def get_livertobw_score(studyid=None,
     # Get master_compiledata if not provided
     if master_compiledata is None:
         studyid = None if use_xpt_file else studyid
-        master_compiledata = get_compile_data(studyid=studyid, path_db=path_db, fake_study=fake_study,
+        master_compiledata = get_compiledata(studyid=studyid, path_db=path_db, fake_study=fake_study,
                                               use_xpt_file=use_xpt_file)
 
     # Get bwzscore_BW if not provided
