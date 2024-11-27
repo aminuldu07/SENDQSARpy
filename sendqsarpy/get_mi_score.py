@@ -36,7 +36,7 @@ def get_mi_score(studyid=None,
     if use_xpt_file:
         # Read data from .xpt files
         mi, _ = pyreadstat.read_xport(os.path.join(path, 'mi.xpt'))
-        dm, _ = pyreadstat.read_xport(os.path.join(path, 'dm.xpt'))
+        dm, _ = pyreadstat.read_xport(os.path.join(path, 'dm.xpt'), encoding="latin1")
     else:
         # Connect to the SQLite database
         db_connection = sqlite3.connect(path)
@@ -156,6 +156,7 @@ def get_mi_score(studyid=None,
     MIData_cleaned_SColmn = MIData_cleaned[['USUBJID', 'MISTRESC', 'MISEV']].copy()
 
     # Reshape the data (pivot the dataframe)
+
     MIData_cleaned_SColmn = MIData_cleaned.pivot_table(index='USUBJID', columns='MISTRESC', values='MISEV', aggfunc='first')
 
     # Fill NAs with "0"
@@ -180,8 +181,7 @@ def get_mi_score(studyid=None,
     # Print MIIncidencePRIME and mi_CompileData
     print_MIIncidencePRIME = MIIncidencePRIME.copy()
     print_mi_CompileData = mi_CompileData.copy()
-    
-    
+        
 
     # Check if mi_CompileData has more than 6 columns
     if mi_CompileData.shape[1] > 6:
@@ -222,7 +222,7 @@ def get_mi_score(studyid=None,
             'Sex': pd.Series(dtype='str'),
             'Finding': pd.Series(dtype='str'),
             'Count': pd.Series(dtype='float')
-    })
+            })
             
             # Iterate over ARMCD groups
             for dose in StudyMI['ARMCD'].unique():
@@ -261,60 +261,245 @@ def get_mi_score(studyid=None,
             if len(remove_index) > 0:
                 GroupIncid = GroupIncid.drop(remove_index)  # Remove rows where Treatment is NA
         
-        MIIncidence = GroupIncid
-
+        #MIIncidence = GroupIncid
+        MIIncidence = GroupIncid.copy()
         # Create mi_CompileData2 and initialize ScoredData
         mi_CompileData2 = mi_CompileData.copy()
         ScoredData = mi_CompileData2.iloc[:, :6].copy()
         IncidenceOverideCount = 0
+        
+        # Extract column names starting from the 7th column
+        colNames = list(mi_CompileData2.columns[6:])
+
+        # Override colNames with "INFILTRATION"
+        colNames = ["INFILTRATION"]
+
 
         ## Iterate over each column for scoring and adjustments
-        for colName in mi_CompileData2.columns[6:]:
+        #for colName in mi_CompileData2.columns[6:]:
+        for colName in colNames:
+            # Initialize the column in ScoredData
+            ScoredData[colName] = pd.NA
+
+            print(f"Processing column: {colName}")  # Debug: Check current column
             ScoredData[colName] = np.where(mi_CompileData2[colName] == 5, 5,
                                        np.where(mi_CompileData2[colName] > 3, 3,
                                                 np.where(mi_CompileData2[colName] == 3, 2,
                                                          np.where(mi_CompileData2[colName] > 0, 1, 0))))
+            print(f"Severity scoring complete for {colName}.")  # Debug
+            # Ensure scoring updates `mi_CompileData2` correctly
             mi_CompileData2[colName] = ScoredData[colName]
+            
+            # Debug: Compare the scored values in ScoredData and mi_CompileData2
+            print(f"ScoredData[{colName}]: {ScoredData[colName].unique()}")
+            print(f"mi_CompileData2[{colName}]: {mi_CompileData2[colName].unique()}")
 
-        # Check incidence percentage by SEX
-        for sex in ['M', 'F']:
-            studyDataIndex = mi_CompileData2[
+            # Check incidence percentage by SEX
+            for sex in ['M', 'F']:
+                # Subset study data by STUDYID and SEX
+                studyDataIndex = mi_CompileData2[
                 (mi_CompileData2['STUDYID'] == ScoredData['STUDYID'].unique()[0]) & 
                 (mi_CompileData2['SEX'] == sex)
-            ].index
-            StudyData = mi_CompileData2.loc[studyDataIndex]
+                ].index
+                StudyData = mi_CompileData2.loc[studyDataIndex]
+                print(f"StudyData subset for SEX={sex}: {StudyData.shape[0]} rows.")  # Debug
 
-            MIIncidStudy = MIIncidence[
+                # Subset MIIncidence data by STUDYID and SEX
+                MIIncidStudy = MIIncidence[
                 (MIIncidence['Treatment'].str.contains(ScoredData['STUDYID'].unique()[0])) & 
                 (MIIncidence['Sex'] == sex)
-            ]
+                ]
+                print(f"MIIncidStudy subset for SEX={sex}: {MIIncidStudy.shape[0]} rows.")  # Debug
+                
+                for Dose2 in StudyData['ARMCD'].unique():
+                    DoseSev = StudyData[StudyData['ARMCD'] == Dose2]
+                    DoseIncid = MIIncidStudy[MIIncidStudy['Treatment'].str.endswith(Dose2)]
+                    print(f"Processing Dose2={Dose2}. DoseSev rows: {DoseSev.shape[0]}, DoseIncid rows: {DoseIncid.shape[0]}")  # Debug
+                    
+                    if colName in DoseIncid['Finding'].values:
+                        findingIndex = DoseIncid[DoseIncid['Finding'] == colName].index
+                        if findingIndex.empty:
+                            print(f"No matching findings for {colName} in DoseIncid.")  # Debug
+                            continue
+                
+                        Incid = DoseIncid.loc[findingIndex, 'Count'].values[0]
 
-            for Dose2 in StudyData['ARMCD'].unique():
-                DoseSev = StudyData[StudyData['ARMCD'] == Dose2]
-                DoseIncid = MIIncidStudy[MIIncidStudy['Treatment'].str.endswith(Dose2)]
-
-                if colName in DoseIncid['Finding'].values:
-                    findingIndex = DoseIncid[DoseIncid['Finding'] == colName].index
-                    Incid = DoseIncid.loc[findingIndex, 'Count'].values[0]
-
-                    Incid = np.where(Incid >= 0.75, 5,
+                        Incid = np.where(Incid >= 0.75, 5,
                                      np.where(Incid >= 0.5, 3,
                                               np.where(Incid >= 0.25, 2,
                                                        np.where(Incid >= 0.1, 1, 0))))
+                        # Debug: Show calculated incidence value
+                        print(f"Calculated Incid for {colName} in Dose2={Dose2}: {Incid}")
 
-                    swapIndex = DoseSev.index[(DoseSev[colName] < Incid) & (DoseSev[colName] > 0)]
-                    if not swapIndex.empty:
-                        DoseSev.loc[swapIndex, colName] = Incid
-                        ScoredData.loc[swapIndex, colName] = DoseSev.loc[swapIndex, colName]
-                        IncidenceOverideCount += 1
+                        swapIndex = DoseSev.index[(DoseSev[colName] < Incid) & (DoseSev[colName] > 0)]
+                        if not swapIndex.empty:
+                            print(f"Rows to update for {colName} in Dose2={Dose2}: {len(swapIndex)}")  # Debug
+                            DoseSev.loc[swapIndex, colName] = Incid
+                            ScoredData.loc[swapIndex, colName] = DoseSev.loc[swapIndex, colName]
+                            IncidenceOverideCount += 1
+                            print(f"IncidenceOverideCount updated: {IncidenceOverideCount}")  # Debug
+                            
+                        else:
+                            print(f"No rows to update for {colName} in Dose2={Dose2}.")  # Debug
+                                    
 
-    # Subset and manipulate ScoredData
-    ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"].copy()
+        # Subset and manipulate ScoredData
+        ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"].copy()
 
-    if ScoredData_subset_HD.shape[1] == 7:
-        ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6]
+        if ScoredData_subset_HD.shape[1] == 7:
+            ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6]
+        else:
+            ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6:].max(axis=1)
+
+ 
+        # Subset the ScoredData where ARMCD == "HD"
+        ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"].copy()
+
+        # Convert columns from the 7th to the last to numeric
+        for col in ScoredData_subset_HD.columns[6:]:
+            ScoredData_subset_HD[col] = pd.to_numeric(ScoredData_subset_HD[col], errors='coerce')
+
+        # Check the number of columns
+        num_cols_ScoredData_subset_HD = ScoredData_subset_HD.shape[1]
+
+        # If number of columns is 7, assign highest_score as the value of the 7th column
+        if num_cols_ScoredData_subset_HD == 7:
+            ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6]
+        else:
+        # If number of columns is more than 7, get the max value from column 7 to the end
+            ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6:].max(axis=1)
+
+        # Move the highest_score column to be the third column
+        cols = list(ScoredData_subset_HD.columns)
+        cols = cols[:2] + ['highest_score'] + cols[2:-1]
+        ScoredData_subset_HD = ScoredData_subset_HD[cols]
+
+        # Enforce mutual exclusivity: If both are TRUE, raise an error
+        if return_individual_scores and return_zscore_by_USUBJID:
+            raise ValueError("Error: Both 'return_individual_scores' and 'return_zscore_by_USUBJID' cannot be TRUE at the same time.")
+
+        if return_individual_scores:
+            # Get all the severity as individual scores in a list
+            mi_scoredata_hd = ScoredData_subset_HD
+
+            # Average calculation for each of the columns from the 8th onward
+            col_8th_to_end = mi_scoredata_hd.iloc[:, 7:]
+            mean_col_8th_to_end = col_8th_to_end.mean().to_dict()
+
+            # Define an empty list
+            empty_mi_score_list = {}
+
+            # Add a 'STUDYID' element to the empty list with value
+            empty_mi_score_list['STUDYID'] = ScoredData_subset_HD['STUDYID'].unique().tolist()
+
+            # Append elements from mean_col_8th_to_end
+            mi_score_final_list = {**empty_mi_score_list, **mean_col_8th_to_end}
+
+            print(mi_score_final_list)
+        
+            # Convert the list to a DataFrame
+            mi_score_final_list_df = pd.DataFrame([mi_score_final_list])
+
+        elif return_zscore_by_USUBJID:
+            MI_score_by_USUBJID_HD = ScoredData_subset_HD
+
+        else:
+            # Averaged z-score per STUDYID for 'MI'
+            # Step 1: Filter for HD
+            MI_final_score = ScoredData_subset_HD[ScoredData_subset_HD['ARMCD'] == "HD"].copy()
+
+            # Step 2: Convert highest_score to numeric
+            MI_final_score['highest_score'] = pd.to_numeric(MI_final_score['highest_score'], errors='coerce')
+
+            # Step 3: Group by STUDYID
+            MI_final_score = MI_final_score.groupby('STUDYID', as_index=False).agg(
+                avg_MI_score=('highest_score', 'mean')
+                )
+
+            # Step 4: Rename avg_MI_score to MI_score_avg
+            averaged_MI_score = MI_final_score.rename(columns={'avg_MI_score': 'MI_score_avg'})
+
     else:
-        ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6:].max(axis=1)
+        # Return based on return_individual_scores
+        if return_individual_scores:
+            # Create an empty DataFrame using pandas
+            mi_score_final_list_df = pd.DataFrame()  
+        elif return_zscore_by_USUBJID:
+            # Create an empty DataFrame
+            MI_score_by_USUBJID_HD = pd.DataFrame()  
+        else:
+            # Create an empty DataFrame
+            averaged_MI_score = pd.DataFrame()  
+    # Return based on return_individual_scores
+    if return_individual_scores:
+        # Return the DataFrame for individual scores
+        return mi_score_final_list_df  
+
+    elif return_zscore_by_USUBJID:
+        # Return the DataFrame for z-scores by USUBJID
+        return MI_score_by_USUBJID_HD  
+    else:
+        # Return the DataFrame for averaged scores
+        return averaged_MI_score          
+            
+    #return ScoredData_subset_HD
+
+
+
+
+##############################################################################################
+
+#Example usage
+
+# # Call the function for fake SQLite database
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+# fake_T_xpt_F_mi_score = get_mi_score(studyid="28738",
+#                                          path_db=db_path, 
+#                                          fake_study=True, 
+#                                          use_xpt_file=False, 
+#                                          master_compiledata=None, 
+#                                          return_individual_scores=False, 
+#                                          return_zscore_by_USUBJID=False)
+
+
+# # Call the function for fake XPT data 
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
+# fake_T_xpt_T_mi_score = get_mi_score(studyid=None,
+#                                          path_db=db_path, 
+#                                          fake_study=True, 
+#                                          use_xpt_file=True, 
+#                                          master_compiledata=None, 
+#                                          return_individual_scores=False, 
+#                                          return_zscore_by_USUBJID=False)
+
+
+
+
+# # Call the function for SEND SQLite database
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
+# real_sqlite_mi_score = get_mi_score(studyid="5003635",
+#                                          path_db=db_path, 
+#                                          fake_study=False, 
+#                                          use_xpt_file=False, 
+#                                          master_compiledata=None, 
+#                                          return_individual_scores=False, 
+#                                          return_zscore_by_USUBJID=False)
+
+
+
+
+# Call the function for SEND XPT data
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+real_XPT_mi_score = get_mi_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=False, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
+
+##############################################################################################
+
 # # If mi_CompileData has more than 6 columns
     # if mi_CompileData.shape[1] > 6:
     #     #Calculate Incidence per group for MI Data
@@ -395,138 +580,79 @@ def get_mi_score(studyid=None,
     #                 if removeIndex.any():
     #                     GroupIncid = GroupIncid[~removeIndex].reset_index(drop=True)
     #                     #GroupIncid = GroupIncid.dropna(subset=['Treatment'])
-
-    MIIncidence = GroupIncid.copy()
-
-    # Create a copy of mi_CompileData named mi_CompileData2
-    mi_CompileData2 = mi_CompileData.copy()
-
-    # Initialize ScoredData with the first 6 columns of "mi_CompileData2"
-    ScoredData = mi_CompileData2.iloc[:, :6].copy()
     
-    # Create a copy of mi_CompileData named mi_CompileData2
-    mi_CompileData2 = mi_CompileData.copy()
+    ##########################################################################################################
+           # MIIncidence = GroupIncid.copy()
 
-    # Initialize ScoredData with the first 6 columns of "mi_CompileData2"
-    ScoredData = mi_CompileData2.iloc[:, :6].copy()
+           # # Create a copy of mi_CompileData named mi_CompileData2
+           # mi_CompileData2 = mi_CompileData.copy()
 
-    # Initialize a counter for incidence overrides
-    IncidenceOverideCount = 0
+           # # Initialize ScoredData with the first 6 columns of "mi_CompileData2"
+           # ScoredData = mi_CompileData2.iloc[:, :6].copy()
+       
+           # # # Create a copy of mi_CompileData named mi_CompileData2
+           # # mi_CompileData2 = mi_CompileData.copy()
 
-    # Iterate over each column for scoring and adjustments
-    for colName in mi_CompileData2.columns[6:]:
-    # Score severity using nested np.where
-        ScoredData[colName] = np.where(mi_CompileData2[colName] == 5, 5,
-                                   np.where(mi_CompileData2[colName] > 3, 3,
-                                            np.where(mi_CompileData2[colName] == 3, 2,
-                                                     np.where(mi_CompileData2[colName] > 0, 1, 0))))
-    mi_CompileData2[colName] = ScoredData[colName]
+           # # # Initialize ScoredData with the first 6 columns of "mi_CompileData2"
+           # # ScoredData = mi_CompileData2.iloc[:, :6].copy()
 
-    # Iterate over sex categories
-    for sex in ['M', 'F']:
-        studyDataIndex = mi_CompileData2[
-            (mi_CompileData2['STUDYID'] == ScoredData['STUDYID'].unique()[0]) & 
-            (mi_CompileData2['SEX'] == sex)
-        ].index
-        StudyData = mi_CompileData2.loc[studyDataIndex]
+           # # Initialize a counter for incidence overrides
+           # IncidenceOverideCount = 0
 
-        MIIncidIndex = MIIncidence[
-            (MIIncidence['Treatment'].str.contains(ScoredData['STUDYID'].unique()[0])) & 
-            (MIIncidence['Sex'] == sex)
-        ].index
-        MIIncidStudy = MIIncidence.loc[MIIncidIndex]
+           # # Iterate over each column for scoring and adjustments
+           # for colName in mi_CompileData2.columns[6:]:
+           #     # Score severity using nested np.where
+           #     ScoredData[colName] = np.where(mi_CompileData2[colName] == 5, 5,
+           #                            np.where(mi_CompileData2[colName] > 3, 3,
+           #                                     np.where(mi_CompileData2[colName] == 3, 2,
+           #                                              np.where(mi_CompileData2[colName] > 0, 1, 0))))
+           #     mi_CompileData2[colName] = ScoredData[colName]
 
-        # Iterate over unique treatment arms (ARMCD)
-        for Dose2 in StudyData['ARMCD'].unique():
-            DoseSev = StudyData[StudyData['ARMCD'] == Dose2]
-            DoseIncid = MIIncidStudy[MIIncidStudy['Treatment'].str.split().str[-1] == Dose2]
+           #     # Iterate over sex categories
+           #     for sex in ['M', 'F']:
+           #         studyDataIndex = mi_CompileData2[
+           #         (mi_CompileData2['STUDYID'] == ScoredData['STUDYID'].unique()[0]) & 
+           #         (mi_CompileData2['SEX'] == sex)
+           #         ].index
+           #         StudyData = mi_CompileData2.loc[studyDataIndex]
 
-            if colName in DoseIncid['Finding'].values:
-                findingIndex = DoseIncid[DoseIncid['Finding'] == colName].index
-                Incid = DoseIncid.loc[findingIndex, 'Count'].values[0]
+           #         MIIncidIndex = MIIncidence[
+           #         (MIIncidence['Treatment'].str.contains(ScoredData['STUDYID'].unique()[0])) & 
+           #         (MIIncidence['Sex'] == sex)
+           #         ].index
+           #         MIIncidStudy = MIIncidence.loc[MIIncidIndex]
 
-                Incid = np.where(Incid >= 0.75, 5,
-                                np.where(Incid >= 0.5, 3,
-                                         np.where(Incid >= 0.25, 2,
-                                                  np.where(Incid >= 0.1, 1, 0))))
+           #         # Iterate over unique treatment arms (ARMCD)
+           #         for Dose2 in StudyData['ARMCD'].unique():
+           #             DoseSev = StudyData[StudyData['ARMCD'] == Dose2]
+           #             DoseIncid = MIIncidStudy[MIIncidStudy['Treatment'].str.split().str[-1] == Dose2]
 
-                swapIndex = DoseSev.index[
-                    (DoseSev[colName] < Incid) & (DoseSev[colName] > 0)
-                ]
-                if not swapIndex.empty:
-                    DoseSev.loc[swapIndex, colName] = Incid
-                    ScoredData.loc[swapIndex, colName] = DoseSev.loc[swapIndex, colName]
-                    IncidenceOverideCount += 1
+           #         if colName in DoseIncid['Finding'].values:
+           #             findingIndex = DoseIncid[DoseIncid['Finding'] == colName].index
+           #             Incid = DoseIncid.loc[findingIndex, 'Count'].values[0]
 
-    # Subset the ScoredData for "HD" group
-    ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"]
+           #             Incid = np.where(Incid >= 0.75, 5,
+           #                         np.where(Incid >= 0.5, 3,
+           #                                  np.where(Incid >= 0.25, 2,
+           #                                           np.where(Incid >= 0.1, 1, 0))))
 
+           #             swapIndex = DoseSev.index[
+           #             (DoseSev[colName] < Incid) & (DoseSev[colName] > 0)
+           #             ]
+           #             if not swapIndex.empty:
+           #                 DoseSev.loc[swapIndex, colName] = Incid
+           #                 ScoredData.loc[swapIndex, colName] = DoseSev.loc[swapIndex, colName]
+           #                 IncidenceOverideCount += 1
 
+           # # Subset the ScoredData for "HD" group
+           # #ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"]
+       
+           # # # Subset and manipulate ScoredData
+           # # ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"].copy()
 
-    ###############################################################################################
-    # # Iterate over each column for scoring and adjustments
-    # for colName in mi_CompileData2.columns[6:]:
-    #     ScoredData[colName] = np.where(mi_CompileData2[colName] == 5, 5,
-    #                                    np.where(mi_CompileData2[colName] > 3, 3,
-    #                                             np.where(mi_CompileData2[colName] == 3, 2,
-    #                                                      np.where(mi_CompileData2[colName] > 0, 1, 0))))
+           # # if ScoredData_subset_HD.shape[1] == 7:
+           #     #     ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6]
+           #     # else:
+           #     #     ScoredData_subset_HD['highest_score'] = ScoredData_subset_HD.iloc[:, 6:].max(axis=1)
 
-    #     mi_CompileData2[colName] = ScoredData[colName]
-
-    #     # Iterate over each sex and treatment arm for incidence adjustments
-    #     for sex in ['M', 'F']:
-    #         StudyData = mi_CompileData2[(mi_CompileData2['SEX'] == sex) & (mi_CompileData2['STUDYID'] == ScoredData['STUDYID'].iloc[0])]
-
-    #         MIIncidStudy = MIIncidence[(MIIncidence['Sex'] == sex) & (MIIncidence['Treatment'].str.contains(ScoredData['STUDYID'].iloc[0]))]
-
-    #         for dose in StudyData['ARMCD'].unique():
-    #             DoseSev = StudyData[StudyData['ARMCD'] == dose]
-    #             DoseIncid = MIIncidStudy[MIIncidStudy['Treatment'].str.contains(dose)]
-
-    #             if colName in DoseIncid['Finding'].values:
-    #                 findingIndex = DoseIncid[DoseIncid['Finding'] == colName].index[0]
-    #                 Incid = DoseIncid.loc[findingIndex, 'Count']
-    #                 Incid = 5 if Incid >= 0.75 else (3 if Incid >= 0.5 else (2 if Incid >= 0.25 else (1 if Incid >= 0.1 else 0)))
-
-    #                 swapIndex = DoseSev[DoseSev[colName] < Incid].index
-    #                 if not swapIndex.empty:
-    #                     DoseSev.loc[swapIndex, colName] = Incid
-    #                     ScoredData.loc[swapIndex, colName] = DoseSev.loc[swapIndex, colName]
-    #################################################################################################
-
-    # Subset the ScoredData
-    #ScoredData_subset_HD = ScoredData[ScoredData['ARMCD'] == "HD"]
-    
-    # # Create MIIncidencePRIME DataFrame
-    # MIIncidencePRIME = MIData_cleaned[['USUBJID', 'MISTRESC', 'MISPEC']]
-
-    # # Pivot the data to create mi_CompileData
-    # MIData_cleaned_SColmn = MIData_cleaned.pivot_table(index='USUBJID', columns='MISTRESC', values='MISEV', fill_value="0")
-    # mi_CompileData = pd.merge(master_compiledata, MIData_cleaned_SColmn, on='USUBJID', how='left')
-
-    # # Remove the 'NORMAL' column if it exists
-    # if 'NORMAL' in mi_CompileData.columns:
-    #     mi_CompileData.drop(columns='NORMAL', inplace=True)
-
-    # # Convert columns 7 to the last to numeric
-    # mi_CompileData.iloc[:, 6:] = mi_CompileData.iloc[:, 6:].apply(pd.to_numeric, errors='coerce')
-
-    return mi_CompileData
-
-
-
-
-##############################################################################################
-
-#Example usage
-# Later in the script, where you want to call the function:
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
-
-# Call the function
-fake_T_xpt_F_mi_score = get_mi_score(studyid="28738",
-                                         path_db=db_path, 
-                                         fake_study=True, 
-                                         use_xpt_file=False, 
-                                         master_compiledata=None, 
-                                         return_individual_scores=False, 
-                                         return_zscore_by_USUBJID=False)
+   ######################################################################################################################
