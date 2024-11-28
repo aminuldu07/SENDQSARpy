@@ -270,9 +270,9 @@ def get_mi_score(studyid=None,
         
         # Extract column names starting from the 7th column
         colNames = list(mi_CompileData2.columns[6:])
-
+        print(colNames)
         # Override colNames with "INFILTRATION"
-        colNames = ["INFILTRATION"]
+        #colNames = ["INFILTRATION"]
 
 
         ## Iterate over each column for scoring and adjustments
@@ -450,40 +450,39 @@ def get_mi_score(studyid=None,
 ##############################################################################################
 
 #Example usage
+# Call the function for fake SQLite database
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+fake_T_xpt_F_mi_score = get_mi_score(studyid="28738",
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=False, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
-# # Call the function for fake SQLite database
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
-# fake_T_xpt_F_mi_score = get_mi_score(studyid="28738",
-#                                          path_db=db_path, 
-#                                          fake_study=True, 
-#                                          use_xpt_file=False, 
-#                                          master_compiledata=None, 
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
 
-
-# # Call the function for fake XPT data 
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
-# fake_T_xpt_T_mi_score = get_mi_score(studyid=None,
-#                                          path_db=db_path, 
-#                                          fake_study=True, 
-#                                          use_xpt_file=True, 
-#                                          master_compiledata=None, 
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
-
+# Call the function for fake XPT data 
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
+fake_T_xpt_T_mi_score = get_mi_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
 
 
-# # Call the function for SEND SQLite database
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
-# real_sqlite_mi_score = get_mi_score(studyid="5003635",
-#                                          path_db=db_path, 
-#                                          fake_study=False, 
-#                                          use_xpt_file=False, 
-#                                          master_compiledata=None, 
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
+
+# Call the function for SEND SQLite database
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
+real_sqlite_mi_score = get_mi_score(studyid="5003635",
+                                         path_db=db_path, 
+                                         fake_study=False, 
+                                         use_xpt_file=False, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
 
 
