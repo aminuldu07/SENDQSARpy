@@ -460,7 +460,6 @@ fake_T_xpt_F_mi_score = get_mi_score(studyid="28738",
                                          return_individual_scores=False, 
                                          return_zscore_by_USUBJID=False)
 
-
 # Call the function for fake XPT data 
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
 fake_T_xpt_T_mi_score = get_mi_score(studyid=None,
@@ -471,9 +470,6 @@ fake_T_xpt_T_mi_score = get_mi_score(studyid=None,
                                          return_individual_scores=False, 
                                          return_zscore_by_USUBJID=False)
 
-
-
-
 # Call the function for SEND SQLite database
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
 real_sqlite_mi_score = get_mi_score(studyid="5003635",
@@ -483,9 +479,6 @@ real_sqlite_mi_score = get_mi_score(studyid="5003635",
                                          master_compiledata=None, 
                                          return_individual_scores=False, 
                                          return_zscore_by_USUBJID=False)
-
-
-
 
 # Call the function for SEND XPT data
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"

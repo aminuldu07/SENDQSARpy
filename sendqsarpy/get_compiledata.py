@@ -414,38 +414,36 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
 
     return master_compiledata
 
+###########################################################################
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#Example usage
 
-# Later in the script, where you want to call the function:
+# Call the function
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+fake_T_xpt_F_compile_data = get_compile_data(studyid="28738",
+                                             path_db = db_path,
+                                             fake_study=True,
+                                             use_xpt_file=False)
 
 # Call the function
-fake_T_xpt_F_compile_data = get_compile_data(studyid="28738", path_db = db_path, fake_study=True, use_xpt_file=False)
-#(db_path, selected_studies)
-
-# Later in the script, where you want to call the function:
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
+fake_T_xpt_T_compile_data = get_compile_data(studyid=None,
+                                             path_db = db_path,
+                                             fake_study =True, 
+                                             use_xpt_file=True)
 
 # Call the function
-fake_T_xpt_T_compile_data = get_compile_data(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
-
-# Later in the script, where you want to call the function:
 db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
-#selected_studies = "28738"  # Example list of selected studies
+real_sqlite_compile_data = get_compile_data(studyid="876",
+                                            path_db = db_path, 
+                                            fake_study=False,
+                                            use_xpt_file=False)
+
 
 # Call the function
-real_sqlite_compile_data = get_compile_data(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
-
-
-# Later in the script, where you want to call the function:
 db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+real_xpt_compile_data = get_compile_data(studyid=None,
+                                         path_db = db_path,
+                                         fake_study =False,
+                                         use_xpt_file=True)
 
-# Call the function
-real_xpt_compile_data = get_compile_data(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
-
-
-
-
-
-
-
-#(db_path, selected_studies)

@@ -22,6 +22,9 @@ def get_livertobw_score(studyid=None,
                         return_individual_scores=False, 
                         return_zscore_by_USUBJID=False):
     
+    studyid = str(studyid)
+    path = path_db
+    
     # Helper function to fetch data from SQLite database
     def fetch_domain_data(db_connection, domain_name, studyid):
         domain_name = domain_name.upper()
@@ -32,7 +35,9 @@ def get_livertobw_score(studyid=None,
     # Read data from .xpt files or SQLite database
     if use_xpt_file:
         # Reading data using pyreadstat
-        om, meta = pyreadstat.read_xpt(f"{path_db}/om.xpt")
+        #om, meta = pyreadstat.read_xpt(f"{path_db}/om.xpt")
+        # Read data from .xpt files
+        om, meta = pyreadstat.read_xport(f"{path}/om.xpt")
     else:
         # Establish a connection to the SQLite database
         db_connection = sqlite3.connect(path_db)
@@ -155,44 +160,37 @@ fake_T_xpt_F_livertobw_score = get_livertobw_score(studyid="28738",
                                          return_individual_scores=False, 
                                          return_zscore_by_USUBJID=False)
 
+# Call the function for fake XPT data 
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
+fake_T_xpt_T_livertobw_score = get_livertobw_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None,
+                                         bwzscore_BW=None,
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
-# # Call the function for fake XPT data 
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
-# fake_T_xpt_T_livertobw_score = get_livertobw_score(studyid=None,
-#                                          path_db=db_path, 
-#                                          fake_study=True, 
-#                                          use_xpt_file=True, 
-#                                          master_compiledata=None,
-#                                          bwzscore_BW=None,
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
+# Call the function for SEND SQLite database
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
+real_sqlite_livertobw_score = get_livertobw_score(studyid="5003635",
+                                         path_db=db_path, 
+                                         fake_study=False, 
+                                         use_xpt_file=False, 
+                                         master_compiledata=None,
+                                         bwzscore_BW=None,
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
-
-
-
-# # Call the function for SEND SQLite database
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
-# real_sqlite_livertobw_score = get_livertobw_score(studyid="5003635",
-#                                          path_db=db_path, 
-#                                          fake_study=False, 
-#                                          use_xpt_file=False, 
-#                                          master_compiledata=None,
-#                                          bwzscore_BW=None,
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
-
-
-
-
-# # Call the function for SEND XPT data
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
-# real_XPT_livertobw_score = get_livertobw_score(studyid=None,
-#                                          path_db=db_path, 
-#                                          fake_study=False, 
-#                                          use_xpt_file=True, 
-#                                          master_compiledata=None,
-#                                          bwzscore_BW=None,
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
+# Call the function for SEND XPT data
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+real_XPT_livertobw_score = get_livertobw_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=False, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None,
+                                         bwzscore_BW=None,
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
 
 ##############################################################################################
