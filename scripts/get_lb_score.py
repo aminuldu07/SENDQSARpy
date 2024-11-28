@@ -10,7 +10,7 @@ import sqlite3
 import pandas as pd
 import numpy as np
 import pyreadstat
-from .get_compile_data import get_compile_data
+from get_compiledata import get_compile_data
 
 def get_lb_score(studyid=None, 
                  path_db=None, 
@@ -372,4 +372,53 @@ def get_lb_score(studyid=None,
     else:
         # Handle the case where neither individual scores nor z-scores by USUBJID are requested
         return averaged_LB_score
+
+##############################################################################################
+#Example usage
+# Call the function
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+fake_T_xpt_F_lb_score = get_lb_score(studyid="28738",
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=False, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
+   
+
+# Call the function for fake XPT data 
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
+fake_T_xpt_T_lb_score = get_lb_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=True, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
+
+
+# Call the function for SEND SQLite database
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/TestDB.db"
+real_sqlite_lb_score = get_lb_score(studyid="5003635",
+                                         path_db=db_path, 
+                                         fake_study=False, 
+                                         use_xpt_file=False, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
+
+
+# Call the function for SEND XPT data
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+real_XPT_lb_score = get_lb_score(studyid=None,
+                                         path_db=db_path, 
+                                         fake_study=False, 
+                                         use_xpt_file=True, 
+                                         master_compiledata=None, 
+                                         return_individual_scores=False, 
+                                         return_zscore_by_USUBJID=False)
+
+##############################################################################################
+
+
 
