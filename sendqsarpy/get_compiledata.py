@@ -129,15 +129,7 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
         db_connection.close()
 
     elif not fake_study and use_xpt_file:
-        # # Read XPT files using pandas
-        # bw = pd.read_sas(os.path.join(path, 'bw.xpt'), format='xport')
-        # dm = pd.read_sas(os.path.join(path, 'dm.xpt'), format='xport')
-        # ds = pd.read_sas(os.path.join(path, 'ds.xpt'), format='xport')
-        # ts = pd.read_sas(os.path.join(path, 'ts.xpt'), format='xport')
-        # tx = pd.read_sas(os.path.join(path, 'tx.xpt'), format='xport')
-        # pp = pd.read_sas(os.path.join(path, 'pp.xpt'), format='xport')
-        # pooldef = pd.read_sas(os.path.join(path, 'pooldef.xpt'), format='xport')
-        
+                
         # Read data from .xpt files using pyreadstat
         bw, meta = pyreadstat.read_xport(os.path.join(path, 'bw.xpt'))
         dm, meta = pyreadstat.read_xport(os.path.join(path, 'dm.xpt'), encoding='latin1')

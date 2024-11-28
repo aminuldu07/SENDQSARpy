@@ -96,13 +96,13 @@ def get_lb_score(studyid=None,
     lb_tk_recovery_filtered = max_visitdy_df[max_visitdy_df["USUBJID"].isin(master_compiledata["USUBJID"])]
 
     # Perform an inner join to match USUBJID and get ARMCD
-    lb_tk_recovery_filtered_armcd = lb_tk_recovery_filtered.merge(
+    LB_tk_recovery_filtered_ARMCD = lb_tk_recovery_filtered.merge(
         master_compiledata[["USUBJID", "ARMCD"]], on="USUBJID", how="inner")
 
     
     # 1. Z-score calculation for 'SERUM | ALT'------------------------------
-    df_serum_alt = lb_tk_recovery_filtered_armcd[
-        lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(['SERUM | ALT', 'PLASMA | ALT', 'WHOLE BLOOD | ALT'])]
+    df_serum_alt = LB_tk_recovery_filtered_ARMCD[
+        LB_tk_recovery_filtered_ARMCD["LBTESTCD"].isin(['SERUM | ALT', 'PLASMA | ALT', 'WHOLE BLOOD | ALT'])]
 
     df_serum_alt["mean_vehicle_alt"] = df_serum_alt.groupby("STUDYID")["LBSTRESN"].transform(
         lambda x: x[df_serum_alt["ARMCD"] == "vehicle"].mean())
@@ -118,8 +118,8 @@ def get_lb_score(studyid=None,
         lambda x: 3 if x >= 3 else (2 if x >= 2 else (1 if x >= 1 else 0)))
 
     # 2. Z-score calculation for 'SERUM | AST'------------------------------
-    df_serum_ast = lb_tk_recovery_filtered_armcd[
-        lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(['SERUM | AST', 'PLASMA | AST', 'WHOLE BLOOD | AST'])]
+    df_serum_ast = LB_tk_recovery_filtered_ARMCD[
+        LB_tk_recovery_filtered_ARMCD["LBTESTCD"].isin(['SERUM | AST', 'PLASMA | AST', 'WHOLE BLOOD | AST'])]
 
     df_serum_ast["mean_vehicle_ast"] = df_serum_ast.groupby("STUDYID")["LBSTRESN"].transform(
         lambda x: x[df_serum_ast["ARMCD"] == "vehicle"].mean())
@@ -135,8 +135,8 @@ def get_lb_score(studyid=None,
         lambda x: 3 if x >= 3 else (2 if x >= 2 else (1 if x >= 1 else 0)))
 
     # 3. Z-score calculation for 'SERUM | ALP'-------------------------------
-    df_serum_alp = lb_tk_recovery_filtered_armcd[
-        lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(['SERUM | ALP', 'PLASMA | ALP', 'WHOLE BLOOD | ALP'])]
+    df_serum_alp = LB_tk_recovery_filtered_ARMCD[
+        LB_tk_recovery_filtered_ARMCD["LBTESTCD"].isin(['SERUM | ALP', 'PLASMA | ALP', 'WHOLE BLOOD | ALP'])]
 
     df_serum_alp["mean_vehicle_alp"] = df_serum_alp.groupby("STUDYID")["LBSTRESN"].transform(
         lambda x: x[df_serum_alp["ARMCD"] == "vehicle"].mean())
@@ -152,8 +152,8 @@ def get_lb_score(studyid=None,
         lambda x: 3 if x >= 3 else (2 if x >= 2 else (1 if x >= 1 else 0)))
     
     # 4. Z-score calculation for 'SERUM | GGT'------------------------------
-    df_serum_ggt = lb_tk_recovery_filtered_armcd[
-        lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(['SERUM | GGT', 'PLASMA | GGT', 'WHOLE BLOOD | GGT'])]
+    df_serum_ggt = LB_tk_recovery_filtered_ARMCD[
+        LB_tk_recovery_filtered_ARMCD["LBTESTCD"].isin(['SERUM | GGT', 'PLASMA | GGT', 'WHOLE BLOOD | GGT'])]
 
     df_serum_ggt["mean_vehicle_ggt"] = df_serum_ggt.groupby("STUDYID")["LBSTRESN"].transform(
         lambda x: x[df_serum_ggt["ARMCD"] == "vehicle"].mean())
@@ -169,8 +169,8 @@ def get_lb_score(studyid=None,
         lambda x: 3 if x >= 3 else (2 if x >= 2 else (1 if x >= 1 else 0)))
     
     # 5. Z-score calculation for 'SERUM | BILI'------------------------------
-    df_serum_bili = lb_tk_recovery_filtered_armcd[
-        lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(['SERUM | BILI', 'PLASMA | BILI', 'WHOLE BLOOD | BILI'])]
+    df_serum_bili = LB_tk_recovery_filtered_ARMCD[
+        LB_tk_recovery_filtered_ARMCD["LBTESTCD"].isin(['SERUM | BILI', 'PLASMA | BILI', 'WHOLE BLOOD | BILI'])]
 
     df_serum_bili["mean_vehicle_bili"] = df_serum_bili.groupby("STUDYID")["LBSTRESN"].transform(
         lambda x: x[df_serum_bili["ARMCD"] == "vehicle"].mean())
@@ -188,8 +188,8 @@ def get_lb_score(studyid=None,
     
     
     # 6. Z-score calculation for 'SERUM | ALB'------------------------------
-    df_serum_alb = lb_tk_recovery_filtered_armcd[
-        lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(['SERUM | ALB', 'PLASMA | ALB', 'WHOLE BLOOD | ALB'])]
+    df_serum_alb = LB_tk_recovery_filtered_ARMCD[
+        LB_tk_recovery_filtered_ARMCD["LBTESTCD"].isin(['SERUM | ALB', 'PLASMA | ALB', 'WHOLE BLOOD | ALB'])]
 
     df_serum_alb["mean_vehicle_alb"] = df_serum_alb.groupby("STUDYID")["LBSTRESN"].transform(
         lambda x: x[df_serum_alb["ARMCD"] == "vehicle"].mean())
@@ -359,9 +359,7 @@ def get_lb_score(studyid=None,
         averaged_LB_score = LB_final_score.rename(columns={'avg_all_LB_zscores': 'LB_score_avg'})
         
         averaged_LB_score = averaged_LB_score.reset_index(drop=True)
-################################################################################
-      
-    
+
     # Check conditions and return based on input flags
     if return_individual_scores:
         # If individual scores are requested, return master_lb_scores
@@ -374,80 +372,6 @@ def get_lb_score(studyid=None,
     else:
         # Handle the case where neither individual scores nor z-scores by USUBJID are requested
         return averaged_LB_score
-
-    # # helper funciton for calculation the zscore for each enzymes 
-  
-    # def calculate_zscores(lb_tk_recovery_filtered_armcd, lbtestcd_groups):
-    #     """
-    #     Calculate Z-scores and assign toxicity scores for multiple LBTESTCD groups.
-
-    #     Parameters:
-    #         lb_tk_recovery_filtered_armcd (pd.DataFrame): The input DataFrame with lab data.
-    #         lbtestcd_groups (dict): A dictionary mapping group names to LBTESTCD lists.
-
-    #     Returns:
-    #         dict: A dictionary with group names as keys and processed DataFrames as values.
-    #     """
-    #     result = {}
-        
-    #     for group_name, lbtestcd_list in lbtestcd_groups.items():
-    #         # Filter data for the given LBTESTCD list
-    #         df_filtered = lb_tk_recovery_filtered_armcd[
-    #             lb_tk_recovery_filtered_armcd["LBTESTCD"].isin(lbtestcd_list)
-    #         ]
-
-    #         # Calculate mean and standard deviation for 'vehicle' group
-    #         df_filtered[f"mean_vehicle_{group_name.lower()}"] = df_filtered.groupby("STUDYID")["LBSTRESN"].transform(
-    #             lambda x: x[df_filtered["ARMCD"] == "vehicle"].mean())
-    #         df_filtered[f"sd_vehicle_{group_name.lower()}"] = df_filtered.groupby("STUDYID")["LBSTRESN"].transform(
-    #             lambda x: x[df_filtered["ARMCD"] == "vehicle"].std())
-            
-    #         # Compute Z-score
-    #         df_filtered[f"{group_name.lower()}_zscore"] = abs(
-    #             (df_filtered["LBSTRESN"] - df_filtered[f"mean_vehicle_{group_name.lower()}"]) /
-    #             df_filtered[f"sd_vehicle_{group_name.lower()}"]
-    #         )
-            
-    #         # Calculate final Z-score for 'HD' group
-    #         final_zscore = (df_filtered[df_filtered["ARMCD"] == "HD"]
-    #                         .groupby("STUDYID")
-    #                         .agg(avg_zscore=(f"{group_name.lower()}_zscore", "mean"))
-    #                         .reset_index())
-            
-    #         # Assign toxicity scores
-    #         final_zscore["avg_zscore"] = final_zscore["avg_zscore"].apply(
-    #             lambda x: 3 if x >= 3 else (2 if x >= 2 else (1 if x >= 1 else 0))
-    #         )
-            
-    #         # Rename the avg_zscore column to include the group name
-    #         final_zscore = final_zscore.rename(columns={"avg_zscore": f"avg_{group_name.lower()}_zscore"})
-
-    #        # Select only STUDYID and the new avg_zscore column
-    #         final_zscore = final_zscore[["STUDYID", f"avg_{group_name.lower()}_zscore"]]
-
-            
-    #         result[group_name] = final_zscore
-        
-    #     return result
-
-    #    # Example Usage
-    # lbtestcd_groups = {
-    #  "ALT": ['SERUM | ALT', 'PLASMA | ALT', 'WHOLE BLOOD | ALT'],
-    #  "AST": ['SERUM | AST', 'PLASMA | AST', 'WHOLE BLOOD | AST'],
-    #  "ALP": ['SERUM | ALP', 'PLASMA | ALP', 'WHOLE BLOOD | ALP'],
-    #  "GGT": ['SERUM | GGT', 'PLASMA | GGT', 'WHOLE BLOOD | GGT'],
-    #  "BILI": ['SERUM | BILI', 'PLASMA | BILI', 'WHOLE BLOOD | BILI'],
-    #  "ALB": ['SERUM | ALB', 'PLASMA | ALB', 'WHOLE BLOOD | ALB']
-    #  }
-
-    # # Call the function
-    # results = calculate_zscores(lb_tk_recovery_filtered_armcd, lbtestcd_groups)
-
-
-    # Return the processed data
-    #return results
-    #return serum_bili_final_zscore
-
 
 ##############################################################################################
 #Example usage
@@ -498,52 +422,3 @@ real_XPT_lb_score = get_lb_score(studyid=None,
 
 
 
-
-
-# serum_alt_results = fake_T_xpt_F_lb_score["ALT"]
-# serum_ast_results = fake_T_xpt_F_lb_score["AST"]
-# serum_alp_results = fake_T_xpt_F_lb_score["ALP"]
-# serum_ggt_results = fake_T_xpt_F_lb_score["GGT"]
-# serum_bili_results = fake_T_xpt_F_lb_score["BILI"]
-# serum_alb_results = fake_T_xpt_F_lb_score["ALB"]
-
-
-
-
-
-
-# #studyid="28738", path_db = db_path, fake_study=True, use_xpt_file=False)
-# #(db_path, selected_studies)
-
-# # Later in the script, where you want to call the function:
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
-
-# # Call the function
-# fake_T_xpt_T_lb_score = get_lb_score(studyid=None,
-#                                          path_db=db_path, 
-#                                          fake_study=True, 
-#                                          use_xpt_file=True, 
-#                                          master_compiledata=None, 
-#                                          return_individual_scores=False, 
-#                                          return_zscore_by_USUBJID=False)
-
-
-# #(studyid=None, path_db = db_path, fake_study =True, use_xpt_file=True)
-
-# # Later in the script, where you want to call the function:
-# db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
-# #selected_studies = "28738"  # Example list of selected studies
-
-# # Call the function
-# real_sqlite_lb_score = get_lb_score(studyid="876", path_db = db_path, fake_study=False, use_xpt_file=False)
-
-
-# # Later in the script, where you want to call the function:
-# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
-
-# # Call the function
-# real_xpt_lb_score = get_lb_score(studyid=None, path_db = db_path, fake_study =False, use_xpt_file=True)
-
-##########################################################################################################
-#############################################################################################################
-##############################################################################################################
