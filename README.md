@@ -1,7 +1,7 @@
-SENDQSAR
+SENDQSARpy
 ================
 
-SENDQSAR is an R package to generateQSAR model from SEND data…
+SENDQSARpy is a python package to generateQSAR model from SEND data…
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 # Overview
@@ -10,11 +10,11 @@ SENDQSAR is an R package to generateQSAR model from SEND data…
 <!--[![R-CMD-check](https://github.com/aminuldu07/SENDQSAR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/aminuldu07/SENDQS#AR/actions/workflows/R-CMD-check.yaml)-->
 <!-- badges: end -->
 
-The goal of SENDQSAR is to …
+The goal of SENDQSARpy is to …
 
 ## Installation
 
-You can install the development version of SENDQSAR from
+You can install the development version of SENDQSARpy from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -27,7 +27,7 @@ devtools::install_github("aminuldu07/SENDQSAR")
 need to fill up the descriptons here :
 
 ``` r
-library(SENDQSAR)
+library(SENDQSARpy)
 ## basic example code
 ```
 
