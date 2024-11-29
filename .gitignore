@@ -1,0 +1,43 @@
+# Bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment directories
+env/
+venv/
+
+# Distribution files
+dist/
+build/
+*.egg-info/
+
+# Sphinx-generated files
+build/
+
+# IDE directories and files (VS Code and Spyder)
+.vscode/             # VS Code settings folder
+.spyder-project/     # Spyder project settings folder
+.spyderworkspace/    # Spyder workspace settings
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Test coverage files
+.coverage
+*.coveragerc
+
+# Pytest cache
+.pytest_cache/
+
+# Python Wheels (if you're distributing them)
+*.whl
+
+# Logs
+*.log
