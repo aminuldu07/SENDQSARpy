@@ -13,12 +13,15 @@ build/
 *.egg-info/
 
 # Sphinx-generated files
-build/
+# Sphinx-generated files (specifically the build folder)
+# You should ignore the entire build folder where Sphinx stores intermediate files.
+#build/
 
 # IDE directories and files (VS Code and Spyder)
 .vscode/             # VS Code settings folder
 .spyder-project/     # Spyder project settings folder
 .spyderworkspace/    # Spyder workspace settings
+.idea/               # PyCharm settings folder
 
 # macOS system files
 .DS_Store
@@ -41,3 +44,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Ignore unnecessary files (e.g., logs, poetry lock files)
+Makefile
+*.bat
