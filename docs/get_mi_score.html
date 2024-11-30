@@ -1,0 +1,221 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_mi_score Function &mdash; sendqsarpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://aminuldu07.github.io/SENDQSARpy/get_mi_score.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently Asked Questions (FAQ)" href="faq.html" />
+    <link rel="prev" title="get_lb_score" href="get_lb_score.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            sendqsarpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_compile_data.html">get_compile_data Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_bw_score.html">get_bw_score</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_livertobw_score.html">get_livertobw_score</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_lb_score.html">get_lb_score</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">get_mi_score Function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#function-details">Function Details</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#my_module_name.get_mi_score"><code class="docutils literal notranslate"><span class="pre">get_mi_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#example-usage">Example Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#changelog">Changelog</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sendqsarpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">get_mi_score Function</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/get_mi_score.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-my_module_name">
+<span id="get-mi-score-function"></span><h1>get_mi_score Function<a class="headerlink" href="#module-my_module_name" title="Link to this heading"></a></h1>
+<p>This function iterates over columns in the <cite>mi_CompileData2</cite> DataFrame, applies severity scoring, and adjusts values based on study-specific incidence thresholds. The results are updated in the <cite>ScoredData</cite> DataFrame and <cite>mi_CompileData2</cite>.</p>
+<section id="function-details">
+<h2>Function Details<a class="headerlink" href="#function-details" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="my_module_name.get_mi_score">
+<span class="sig-prename descclassname"><span class="pre">my_module_name.</span></span><span class="sig-name descname"><span class="pre">get_mi_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mi_CompileData2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ScoredData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">MIIncidence</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#my_module_name.get_mi_score" title="Link to this definition"></a></dt>
+<dd><p>Processes severity scoring and incidence-based adjustments for columns in a dataset.</p>
+<p><strong>Parameters</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mi_CompileData2</strong> – pandas.DataFrame
+The main DataFrame containing the data to be processed.
+Must include columns for <cite>STUDYID</cite>, <cite>SEX</cite>, and other severity-related columns.</p></li>
+<li><p><strong>ScoredData</strong> – pandas.DataFrame
+A DataFrame used to store the results of severity scoring.</p></li>
+<li><p><strong>MIIncidence</strong> – pandas.DataFrame
+A DataFrame containing incidence data for different treatments and findings.
+Must include columns <cite>Treatment</cite>, <cite>Sex</cite>, <cite>Finding</cite>, and <cite>Count</cite>.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Returns</strong></p>
+<p>None. Updates <cite>mi_CompileData2</cite> and <cite>ScoredData</cite> in-place.</p>
+<p><strong>Raises</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If multiple unique <cite>STUDYID</cite> values are found in <cite>ScoredData</cite>.</p>
+</dd>
+</dl>
+<p><strong>Steps</strong></p>
+<ol class="arabic">
+<li><p><strong>Severity Scoring</strong>:
+- Scores severity for each column in <cite>mi_CompileData2</cite> starting from the 6th column.
+- Scoring rules:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>5 if value equals 5.</p></li>
+<li><p>3 if value is greater than 3.</p></li>
+<li><p>2 if value equals 3.</p></li>
+<li><p>1 if value is greater than 0 but less than 3.</p></li>
+<li><p>0 otherwise.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><strong>Subset Filtering</strong>:
+- Filters data by <cite>STUDYID</cite> and <cite>SEX</cite> to process subsets for incidence calculations.</p></li>
+<li><p><strong>Incidence Adjustment</strong>:
+- Calculates an adjusted incidence score based on the <cite>Count</cite> column in <cite>MIIncidence</cite>.
+- Updates values in <cite>ScoredData</cite> and <cite>mi_CompileData2</cite> where the calculated incidence score is higher than the current severity score.</p></li>
+<li><p><strong>Debugging Information</strong>:
+- Prints intermediate outputs to verify processing steps.</p></li>
+</ol>
+<p><strong>Notes</strong></p>
+<p>This function assumes that <cite>mi_CompileData2</cite> and <cite>MIIncidence</cite> have the required structure and columns. Debugging outputs are included for development purposes.</p>
+</dd></dl>
+
+</section>
+<section id="example-usage">
+<h2>Example Usage<a class="headerlink" href="#example-usage" title="Link to this heading"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="c1"># Sample data</span>
+<span class="n">mi_CompileData2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;STUDYID&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Study1&#39;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="s1">&#39;SEX&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">,</span> <span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;ARMCD&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;HD&#39;</span><span class="p">,</span> <span class="s1">&#39;LD&#39;</span><span class="p">,</span> <span class="s1">&#39;HD&#39;</span><span class="p">,</span> <span class="s1">&#39;LD&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Col7&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+    <span class="s1">&#39;Col8&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">ScoredData</span> <span class="o">=</span> <span class="n">mi_CompileData2</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">MIIncidence</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Treatment&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Study1 HD&#39;</span><span class="p">,</span> <span class="s1">&#39;Study1 LD&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Sex&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;M&#39;</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Finding&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Col7&#39;</span><span class="p">,</span> <span class="s1">&#39;Col8&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Count&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span>
+<span class="p">})</span>
+
+<span class="n">IncidenceOverideCount</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="c1"># Call the function</span>
+<span class="n">get_mi_score</span><span class="p">(</span><span class="n">mi_CompileData2</span><span class="p">,</span> <span class="n">ScoredData</span><span class="p">,</span> <span class="n">MIIncidence</span><span class="p">)</span>
+
+<span class="c1"># Check results</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ScoredData</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="changelog">
+<h2>Changelog<a class="headerlink" href="#changelog" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>v1.0</strong>: Initial version with scoring and incidence adjustment logic.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="get_lb_score.html" class="btn btn-neutral float-left" title="get_lb_score" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions (FAQ)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Md Aminul Islam Prodhan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

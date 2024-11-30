@@ -1,0 +1,188 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_livertobw_score &mdash; sendqsarpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://aminuldu07.github.io/SENDQSARpy/get_livertobw_score.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="get_lb_score" href="get_lb_score.html" />
+    <link rel="prev" title="get_bw_score" href="get_bw_score.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            sendqsarpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_compile_data.html">get_compile_data Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_bw_score.html">get_bw_score</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">get_livertobw_score</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#get_livertobw_score"><code class="docutils literal notranslate"><span class="pre">get_livertobw_score()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="get_lb_score.html">get_lb_score</a></li>
+<li class="toctree-l1"><a class="reference internal" href="get_mi_score.html">get_mi_score Function</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sendqsarpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">get_livertobw_score</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/get_livertobw_score.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="get-livertobw-score">
+<h1>get_livertobw_score<a class="headerlink" href="#get-livertobw-score" title="Link to this heading"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="get_livertobw_score">
+<span class="sig-name descname"><span class="pre">get_livertobw_score</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">studyid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">path_db</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fake_study</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_xpt_file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">master_compiledata</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bwzscore_BW</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_individual_scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_zscore_by_USUBJID</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_livertobw_score" title="Link to this definition"></a></dt>
+<dd><p>Calculates the liver-to-body weight (liverToBW) z-scores and related metrics for a given study.</p>
+<p>The function processes either <cite>.xpt</cite> files or data from an SQLite database. It returns either individual scores, z-scores for each subject (by <cite>USUBJID</cite>), or average z-scores for the study, depending on the specified parameters.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><strong>studyid</strong> (<em>str</em>, optional): The study ID. If <cite>None</cite>, the study ID is not used (default is <cite>None</cite>).</p></li>
+<li><p><strong>path_db</strong> (<em>str</em>): Path to the database or directory containing the <cite>.xpt</cite> files.</p></li>
+<li><p><strong>fake_study</strong> (<em>bool</em>, optional): If <cite>True</cite>, it uses a fake study setup for testing purposes (default is <cite>False</cite>).</p></li>
+<li><p><strong>use_xpt_file</strong> (<em>bool</em>, optional): If <cite>True</cite>, data is read from <cite>.xpt</cite> files instead of the SQLite database (default is <cite>False</cite>).</p></li>
+<li><p><strong>master_compiledata</strong> (<em>DataFrame</em>, optional): A DataFrame containing master compile data for the study. If <cite>None</cite>, it will be fetched from the <cite>get_compile_data</cite> function.</p></li>
+<li><p><strong>bwzscore_BW</strong> (<em>DataFrame</em>, optional): A DataFrame containing body weight z-scores. If <cite>None</cite>, it will be fetched from the <cite>get_bw_score</cite> function.</p></li>
+<li><p><strong>return_individual_scores</strong> (<em>bool</em>, optional): If <cite>True</cite>, the function returns individual liverToBW z-scores for each subject. Cannot be used with <cite>return_zscore_by_USUBJID</cite> (default is <cite>False</cite>).</p></li>
+<li><p><strong>return_zscore_by_USUBJID</strong> (<em>bool</em>, optional): If <cite>True</cite>, the function returns the liverToBW z-scores for each subject by <cite>USUBJID</cite>. Cannot be used with <cite>return_individual_scores</cite> (default is <cite>False</cite>).</p></li>
+</ul>
+<p><strong>Returns:</strong></p>
+<ul class="simple">
+<li><p>If <cite>return_individual_scores</cite> is <cite>True</cite>, returns a DataFrame with individual z-scores for each subject in the “HD” arm.</p></li>
+<li><p>If <cite>return_zscore_by_USUBJID</cite> is <cite>True</cite>, returns a DataFrame with liverToBW z-scores by <cite>USUBJID</cite> for the “HD” arm.</p></li>
+<li><p>Otherwise, returns a DataFrame with the average liverToBW z-scores for the study.</p></li>
+</ul>
+<p><strong>Raises:</strong></p>
+<ul class="simple">
+<li><p><strong>ValueError</strong>: If both <cite>return_individual_scores</cite> and <cite>return_zscore_by_USUBJID</cite> are <cite>True</cite> at the same time.</p></li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>To calculate and return the average liver-to-body weight z-scores for the “HD” arm:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">get_livertobw_score</span><span class="p">(</span>
+    <span class="n">studyid</span><span class="o">=</span><span class="s2">&quot;STUDY123&quot;</span><span class="p">,</span>
+    <span class="n">path_db</span><span class="o">=</span><span class="s2">&quot;/path/to/database&quot;</span><span class="p">,</span>
+    <span class="n">fake_study</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">use_xpt_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">master_compiledata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bwzscore_BW</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_individual_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_zscore_by_USUBJID</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To get individual liver-to-body weight z-scores for each subject in the “HD” arm:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">get_livertobw_score</span><span class="p">(</span>
+    <span class="n">studyid</span><span class="o">=</span><span class="s2">&quot;STUDY123&quot;</span><span class="p">,</span>
+    <span class="n">path_db</span><span class="o">=</span><span class="s2">&quot;/path/to/database&quot;</span><span class="p">,</span>
+    <span class="n">fake_study</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">use_xpt_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">master_compiledata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bwzscore_BW</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_individual_scores</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">return_zscore_by_USUBJID</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>To get liver-to-body weight z-scores by <cite>USUBJID</cite> for the “HD” arm:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">get_livertobw_score</span><span class="p">(</span>
+    <span class="n">studyid</span><span class="o">=</span><span class="s2">&quot;STUDY123&quot;</span><span class="p">,</span>
+    <span class="n">path_db</span><span class="o">=</span><span class="s2">&quot;/path/to/database&quot;</span><span class="p">,</span>
+    <span class="n">fake_study</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">use_xpt_file</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">master_compiledata</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">bwzscore_BW</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">return_individual_scores</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_zscore_by_USUBJID</span><span class="o">=</span><span class="kc">True</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="get_bw_score.html" class="btn btn-neutral float-left" title="get_bw_score" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="get_lb_score.html" class="btn btn-neutral float-right" title="get_lb_score" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Md Aminul Islam Prodhan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

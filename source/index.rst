@@ -10,4 +10,8 @@ This package streamlines QSAR model development using the SEND database.
    getting_started
    usage
    get_compile_data
+   get_bw_score
+   get_livertobw_score
+   get_lb_score
+   get_mi_score
    faq
