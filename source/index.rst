@@ -37,6 +37,10 @@ Contents
 **Core Functions**
 
 - `get_compile_data Function <get_compile_data.html>`_
+- `get_bw_score Function <get_bw_score.html>`_
+- `get_livertobw_score Function <get_livertobw_score.html>`_
+- `get_lb_score Function <get_lb_score.html>`_
+- `get_mi_score Function <get_mi_score.html>`_
 
 **Additional Resources**
 
