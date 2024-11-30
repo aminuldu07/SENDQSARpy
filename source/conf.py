@@ -26,6 +26,10 @@ exclude_patterns = []
 
 html_theme = 'sphinx_rtd_theme'
 html_static_path = ['_static']
+html_css_files = [
+    'custom.css',  # Link to your custom CSS file
+]
+
 
 # Add this line to set the base URL for your GitHub Pages
 html_baseurl = 'https://aminuldu07.github.io/SENDQSARpy/'
