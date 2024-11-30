@@ -1,0 +1,196 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>get_compile_data Function &mdash; sendqsarpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+    <link rel="canonical" href="https://aminuldu07.github.io/SENDQSARpy/get_compile_data.html" />
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=01f34227"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Frequently Asked Questions (FAQ)" href="faq.html" />
+    <link rel="prev" title="Usage Guide" href="usage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            sendqsarpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">get_compile_data Function</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-signature">Function Signature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#returns">Returns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage-example">Usage Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#related-links">Related Links</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions (FAQ)</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sendqsarpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">get_compile_data Function</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/get_compile_data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="get-compile-data-function">
+<h1>get_compile_data Function<a class="headerlink" href="#get-compile-data-function" title="Link to this heading"></a></h1>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>The <cite>get_compile_data</cite> function processes data from the SEND database to produce a cleaned and ranked dataset for further QSAR model development. This function includes filtering, data manipulation, and ranking procedures to align the dataset with experimental requirements.</p>
+</section>
+<section id="function-signature">
+<h2>Function Signature<a class="headerlink" href="#function-signature" title="Link to this heading"></a></h2>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
+<p>The following parameters are expected as input to the function:</p>
+<ul class="simple">
+<li><p><strong>data (pd.DataFrame)</strong>: The input dataset, typically loaded from the SEND database.</p></li>
+<li><p><strong>Species (str)</strong>: The species to filter for (e.g., ‘rat’).</p></li>
+<li><p><strong>pp (pd.DataFrame)</strong>: Pooling data containing pool IDs and related information.</p></li>
+<li><p><strong>pooldef (pd.DataFrame)</strong>: Definitions of pool IDs, including their associated subjects and studies.</p></li>
+<li><p><strong>tx (pd.DataFrame)</strong>: Treatment data containing dose levels and associated parameters.</p></li>
+<li><p><strong>bw (pd.DataFrame)</strong>: Body weight data to help with additional filtering.</p></li>
+</ul>
+</section>
+<section id="returns">
+<h2>Returns<a class="headerlink" href="#returns" title="Link to this heading"></a></h2>
+<p>A cleaned and ranked dataset (<cite>pd.DataFrame</cite>) that includes the following columns:</p>
+<ul class="simple">
+<li><p><cite>STUDYID</cite>: Study identifier.</p></li>
+<li><p><cite>USUBJID</cite>: Unique subject identifier.</p></li>
+<li><p><cite>Species</cite>: The species associated with the dataset.</p></li>
+<li><p><cite>SEX</cite>: The sex of the subjects.</p></li>
+<li><p><cite>ARMCD</cite>: The dose ranking assigned to the subjects (‘vehicle’, ‘HD’, ‘Intermediate’, or ‘Both’).</p></li>
+<li><p><cite>SETCD</cite>: Set code for experimental groups.</p></li>
+</ul>
+</section>
+<section id="usage-example">
+<h2>Usage Example<a class="headerlink" href="#usage-example" title="Link to this heading"></a></h2>
+<p>Below is an example of how to use the <cite>get_compile_data</cite> function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">sendqsarpy.get_compiledata</span> <span class="kn">import</span> <span class="n">get_compile_data</span>
+
+<span class="c1"># Load your datasets</span>
+<span class="n">recovery_cleaned_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;recovery_cleaned_data.csv&#39;</span><span class="p">)</span>
+<span class="n">pp_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;pp_data.csv&#39;</span><span class="p">)</span>
+<span class="n">pooldef_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;pooldef_data.csv&#39;</span><span class="p">)</span>
+<span class="n">tx_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;tx_data.csv&#39;</span><span class="p">)</span>
+<span class="n">bw_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;bw_data.csv&#39;</span><span class="p">)</span>
+
+<span class="c1"># Call the function</span>
+<span class="n">cleaned_data</span> <span class="o">=</span> <span class="n">get_compile_data</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">recovery_cleaned_data</span><span class="p">,</span>
+    <span class="n">Species</span><span class="o">=</span><span class="s1">&#39;rat&#39;</span><span class="p">,</span>
+    <span class="n">pp</span><span class="o">=</span><span class="n">pp_data</span><span class="p">,</span>
+    <span class="n">pooldef</span><span class="o">=</span><span class="n">pooldef_data</span><span class="p">,</span>
+    <span class="n">tx</span><span class="o">=</span><span class="n">tx_data</span><span class="p">,</span>
+    <span class="n">bw</span><span class="o">=</span><span class="n">bw_data</span>
+<span class="p">)</span>
+
+<span class="c1"># Inspect the results</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">cleaned_data</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Ensure the input data follows the expected schema (columns and data types).</p></li>
+<li><p>This function assumes the SEND database schema for input data tables.</p></li>
+<li><p>For troubleshooting or custom dataset processing, refer to the source code and modify as needed.</p></li>
+</ul>
+</section>
+<section id="related-links">
+<h2>Related Links<a class="headerlink" href="#related-links" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="index.html">SENDQSARpy Documentation</a></p></li>
+<li><p><a class="reference external" href="getting_started.html">Getting Started</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="usage.html" class="btn btn-neutral float-left" title="Usage Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="faq.html" class="btn btn-neutral float-right" title="Frequently Asked Questions (FAQ)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, Md Aminul Islam Prodhan.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
