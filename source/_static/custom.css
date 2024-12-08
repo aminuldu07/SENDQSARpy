@@ -1,4 +1,4 @@
-/* Custom CSS to make the page content full-width */
+/* Custom CSS to make the page content full-width
 .wy-nav-content {
     max-width: 100%;   /* Allow content to take up full width */
     width: 100%;
@@ -7,4 +7,85 @@
 .document {
     max-width: 100%;   /* Ensure document content spans full width */
     width: 100%;
+} */
+
+/* ---------------------------- Adjust Layout for Balanced Design ---------------------------- */
+
+/* Set a max-width for content and sidebar */
+.wy-nav-content {
+    max-width: 75%;   /* Reduce content width to leave space for the sidebar */
+    width: 75%;
+    margin-right: 20px;  /* Space between content and sidebar */
+}
+
+.wy-side-nav {
+    max-width: 25%;   /* Sidebar width */
+    width: 25%;
+    background-color: #f8f8f8; /* Optional: Light background color for the sidebar */
+    padding: 10px;
+}
+
+/* Optional: Style the sidebar for better visibility */
+.wy-side-nav .wy-nav-side {
+    padding: 20px;
+    background-color: #f0f0f0;
+    border-radius: 10px; /* Optional rounded corners */
+}
+
+/* Add some padding to content */
+.document {
+    max-width: 100%;
+    width: 100%;
+    padding: 20px;
+}
+
+
+/* ---------------------------- Make Sidebar More Functional ---------------------------- */
+
+/* Add background color, border-radius, and shadow to the sidebar */
+.wy-side-nav {
+    background-color: #f0f0f0;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);  /* Subtle shadow effect */
+}
+
+/* Style links in the sidebar to stand out */
+.wy-side-nav a {
+    color: #0066cc;  /* Blue links */
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.wy-side-nav a:hover {
+    color: #003366;  /* Darker blue on hover */
+    text-decoration: underline;
+}
+
+/* ---------------------------- Optional Sidebar Icons ---------------------------- */
+
+/* Optional: Add small icons or logos to the sidebar for better visuals */
+.sidebar-icon img {
+    width: 30px;
+    height: 30px;
+    margin-bottom: 10px;
+}
+
+/* ---------------------------- Add a Footer ---------------------------- */
+
+/* Simple footer styling */
+.footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+/* ---------------------------- Padding & Spacing ---------------------------- */
+
+/* Add padding to both content and sidebar for better spacing */
+.document, .wy-side-nav {
+    padding: 20px;
 }
