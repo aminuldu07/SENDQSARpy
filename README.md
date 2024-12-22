@@ -34,10 +34,10 @@ library(SENDQSARpy)
 What is special about using :
 
 ``` r
-#summary(cars)
+
 ```
 
-skjdkdfkd .
+
 
 You can also embed plots, for example:
 
