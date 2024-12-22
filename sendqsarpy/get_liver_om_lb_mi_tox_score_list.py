@@ -9,7 +9,8 @@ import pandas as pd
 from .get_compile_data import get_compile_data
 from .get_bw_score import get_bw_score
 from .get_livertobw_score import get_livertobw_score
-
+from .get_lb_score import get_lb_score
+from .get_mi_score import get_mi_score
 
 def get_liver_om_lb_mi_tox_score_list(
     studyid_or_studyids=None,
@@ -78,6 +79,8 @@ def get_liver_om_lb_mi_tox_score_list(
         # Initialize the master error DataFrame to store the details of errors
         master_error_df = pd.DataFrame(columns=["STUDYID", "Block", "ErrorMessage"])
    
+    
+   #---------------------------------------------------------------------
     # iterate over studyid or each xpt folder
     # Process each study
     for studyid in studyid_or_studyids:
@@ -377,107 +380,198 @@ def get_liver_om_lb_mi_tox_score_list(
             else:
                 master_error_df = pd.DataFrame([error_block3])
 
-# <><><><><><><><><><><><><><><><><><> "LB" zscoring <><><><><><><><><><><><><>
+        # <><><><><><><><><><><><><><><><><><> "LB" zscoring <><><><><><><><><><><><><>
   
-
-
-
-
-
-
-# Process scores (BW, LiverToBW, LB, MI)
         try:
-            process_scores(
-                studyid, path_db, master_compiledata, master_data, fake_study, use_xpt_file,
-                output_individual_scores, output_zscore_by_USUBJID
-            )
+            # Set 'studyid' to None if using an XPT file, otherwise keep the original value
+            studyid = None if use_xpt_file else studyid
+
+            if output_individual_scores:
+                # Get LB scores for individual outputs
+                master_lb_scores = get_lb_score(studyid=studyid,
+                                            path_db=path_db,
+                                            fake_study=fake_study,
+                                            use_xpt_file=use_xpt_file,
+                                            master_compiledata=master_compiledata,
+                                            return_individual_scores=True,
+                                            return_zscore_by_USUBJID=False
+                                            )
+
+                # Append to master_lb_score_six
+                master_lb_score_six = pd.concat([master_lb_score_six, master_lb_scores])
+
+            elif output_zscore_by_USUBJID:
+                # Get LB z-scores by USUBJID
+                LB_zscore_by_USUBJID_HD = get_lb_score(studyid=studyid,
+                                                   path_db=path_db,
+                                                   fake_study=fake_study,
+                                                   use_xpt_file=use_xpt_file,
+                                                   master_compiledata=master_compiledata,
+                                                   return_individual_scores=False,
+                                                   return_zscore_by_USUBJID=True
+                                                   )
+
+                # Extract unique study identifier
+                lb_study_identifier = LB_zscore_by_USUBJID_HD["STUDYID"].unique()[0]
+
+                # Append to master_lb_score with the study identifier as key
+                master_lb_score[str(lb_study_identifier)] = LB_zscore_by_USUBJID_HD
+
+            else:
+                # Get averaged LB score
+                averaged_LB_score = get_lb_score(studyid=studyid,
+                                             path_db=path_db,
+                                             fake_study=fake_study,
+                                             use_xpt_file=use_xpt_file,
+                                             master_compiledata=master_compiledata,
+                                             return_individual_scores=False,
+                                             return_zscore_by_USUBJID=False
+                                             )
+
+                # Extract the LB score value for the current STUDYID
+                calculated_LB_value = averaged_LB_score.loc[
+                    averaged_LB_score["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
+                    "LB_score_avg"
+                    ].values[0]
+
+                # Update the LB_score_avg in FOUR_Liver_Score_avg for the current STUDYID
+                FOUR_Liver_Score_avg.loc[
+                    FOUR_Liver_Score_avg["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
+                    "LB_score_avg"
+                    ] = calculated_LB_value
+
         except Exception as e:
-            log_error(master_data["master_error_df"], studyid, "scores", e)
-            error_studies.append(studyid)
+                # Handling errors
+                print(f"Error in LB zscoring: {str(e)}")
 
-    # Combine results and return
-    result = combine_results(master_data, output_individual_scores, output_zscore_by_USUBJID)
-    return {"error_studies": error_studies, "result": result}
+                # Log the error
+                error_block4 = {
+                    "STUDYID": path_db if use_xpt_file else studyid,
+                    "Block": "LB",
+                    "ErrorMessage": str(e)
+                    }
 
-def initialize_dataframes(output_individual_scores, output_zscore_by_USUBJID):
-    """Initialize master dataframes based on output type."""
-    if output_individual_scores:
-        return {
-            "master_liverToBW": pd.DataFrame(columns=['STUDYID', 'avg_liverToBW_zscore']),
-            "master_lb_score_six": pd.DataFrame(columns=[
-                'STUDYID', 'avg_alb_zscore', 'avg_ast_zscore', 'avg_alp_zscore',
-                'avg_alt_zscore', 'avg_bili_zscore', 'avg_ggt_zscore'
-            ]),
-            "master_mi_df": pd.DataFrame(),
-            "master_error_df": pd.DataFrame(columns=['STUDYID', 'Block', 'ErrorMessage'])
-        }
-    elif output_zscore_by_USUBJID:
-        return {
-            "master_liverToBW": [],
-            "master_lb_score": [],
-            "master_mi_score": [],
-            "master_error_df": pd.DataFrame(columns=['STUDYID', 'Block', 'ErrorMessage'])
-        }
-    else:
-        return {
-            "FOUR_Liver_Score_avg": pd.DataFrame(columns=[
-                'STUDYID', 'BWZSCORE_avg', 'liverToBW_avg', 'LB_score_avg', 'MI_score_avg'
-            ]),
-            "master_error_df": pd.DataFrame(columns=['STUDYID', 'Block', 'ErrorMessage'])
-        }
+                # Append to master_error_df
+                if 'master_error_df' in globals():
+                    master_error_df = pd.concat([master_error_df, pd.DataFrame([error_block4])])
+                else:
+                    master_error_df = pd.DataFrame([error_block4])
 
-def log_error(error_df, studyid, block, exception):
-    """Log an error in the master error DataFrame."""
-    error_entry = {
-        "STUDYID": studyid,
-        "Block": block,
-        "ErrorMessage": str(exception)
-    }
-    error_df = pd.concat([error_df, pd.DataFrame([error_entry])], ignore_index=True)
-    print(f"Error in {block}: {exception}")
+# <><><><><><><><><><><><><><><><><><> "MI" zscoring <><><><><><><><><><><><><>
 
-def process_scores(studyid, path_db, master_compiledata, master_data, fake_study, use_xpt_file, output_individual_scores, output_zscore_by_USUBJID):
-    """Process scores for BW, LiverToBW, LB, and MI."""
-    try:
-        # Example for BW Score
-        if output_individual_scores:
-            bwzscore_BW = get_bw_score(
-                studyid, path_db, fake_study, use_xpt_file, master_compiledata,
-                return_individual_scores=True, return_zscore_by_USUBJID=False
-            )
-            master_data["master_liverToBW"] = pd.concat([master_data["master_liverToBW"], bwzscore_BW], ignore_index=True)
-        elif output_zscore_by_USUBJID:
-            pass  # Handle zscore by USUBJID logic
+
+        try:
+            # Initialize 'studyid' to None if using an XPT file, otherwise keep its original value
+            studyid = None if use_xpt_file else studyid
+
+            if output_individual_scores:
+                # Get MI scores for individual outputs
+                mi_score_final_list_df = get_mi_score(studyid=studyid,
+                                                      path_db=path_db,
+                                                      fake_study=fake_study,
+                                                      use_xpt_file=use_xpt_file,
+                                                      master_compiledata=master_compiledata,
+                                                      return_individual_scores=True,
+                                                      return_zscore_by_USUBJID=False
+                                                      )
+
+                # Append to master_mi_df
+                master_mi_df = pd.concat([master_mi_df, mi_score_final_list_df])
+
+            elif output_zscore_by_USUBJID:
+                # Get MI z-scores by USUBJID
+                MI_score_by_USUBJID_HD = get_mi_score(studyid=studyid,
+                                                      path_db=path_db,
+                                                      fake_study=fake_study,
+                                                      use_xpt_file=use_xpt_file,
+                                                      master_compiledata=master_compiledata,
+                                                      return_individual_scores=False,
+                                                      return_zscore_by_USUBJID=True
+                                                      )
+
+                # Extract unique study identifier
+                mi_study_identifier = MI_score_by_USUBJID_HD["STUDYID"].unique()[0]
+
+                # Append to master_mi_score with the study identifier as the key
+                master_mi_score[str(mi_study_identifier)] = MI_score_by_USUBJID_HD
+
+            else:
+                # Get averaged MI score
+                averaged_MI_score = get_mi_score(studyid=studyid,
+                                                 path_db=path_db,
+                                                 fake_study=fake_study,
+                                                 use_xpt_file=use_xpt_file,
+                                                 master_compiledata=master_compiledata,
+                                                 return_individual_scores=False,
+                                                 return_zscore_by_USUBJID=False
+                                                 )
+
+                # Extract the MI score value for the current STUDYID
+                calculated_MI_value = averaged_MI_score.loc[
+                averaged_MI_score["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
+                "MI_score_avg"
+                ].values[0]
+
+                # Update the MI_score_avg in FOUR_Liver_Score_avg for the current STUDYID
+                FOUR_Liver_Score_avg.loc[
+                FOUR_Liver_Score_avg["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
+                "MI_score_avg"
+                ] = calculated_MI_value
+
+        except Exception as e:
+            # Log the error
+            error_block5 = {
+                "STUDYID": path_db if use_xpt_file else studyid,
+                "Block": "MI",
+                "ErrorMessage": str(e)
+                }
+
+        # Append the error to master_error_df
+        if 'master_error_df' in globals():
+            master_error_df = pd.concat([master_error_df, pd.DataFrame([error_block5])])
         else:
-            averaged_HD_BWzScore = get_bw_score(
-                studyid, path_db, fake_study, use_xpt_file, master_compiledata,
-                return_individual_scores=False, return_zscore_by_USUBJID=False
-            )
-            # Update FOUR_Liver_Score_avg
-    except Exception as e:
-        raise RuntimeError(f"Error processing BW scores: {e}")
+            master_error_df = pd.DataFrame([error_block5])
 
-def combine_results(master_data, output_individual_scores, output_zscore_by_USUBJID):
-    """Combine results into the final output."""
+
     if output_individual_scores:
-        combined = master_data["master_liverToBW"].merge(
-            master_data["master_lb_score_six"], on="STUDYID", how="outer"
-        ).merge(master_data["master_mi_df"], on="STUDYID", how="outer")
-        return combined
+            # Perform a full join (merge) to keep all rows from each data frame
+            combined_output_individual_scores = master_liverToBW.merge(
+            master_lb_score_six, on="STUDYID", how="outer"
+            ).merge(
+                master_mi_df, on="STUDYID", how="outer"
+            )
+
     elif output_zscore_by_USUBJID:
-        # Combine zscore by USUBJID results
-        pass
+            # Concatenate data frames to combine them row-wise
+            combined_liverToBW = pd.concat(master_liverToBW, ignore_index=True)
+            combined_lb_score = pd.concat(master_lb_score, ignore_index=True)
+            combined_mi_score = pd.concat(master_mi_score, ignore_index=True)
+
+            # Merge the first two data frames on STUDYID and USUBJID
+            combined_df = combined_liverToBW.merge(
+                combined_lb_score, on=["STUDYID", "USUBJID"], how="outer"
+                )
+
+            # Merge the result with the third data frame on STUDYID and USUBJID
+            final_output_zscore_by_USUBJID = combined_df.merge(
+                combined_mi_score, on=["STUDYID", "USUBJID"], how="outer"
+                )
+
     else:
-        result = master_data["FOUR_Liver_Score_avg"]
-        result.iloc[:, 1:] = result.iloc[:, 1:].round(2)
-        return result
+        # Round all columns from the second column onward to two decimal places
+        FOUR_Liver_Score_avg.iloc[:, 1:] = FOUR_Liver_Score_avg.iloc[:, 1:].round(2)
 
-# Example function placeholders
-def get_compile_data(studyid, path_db, fake_study, use_xpt_file):
-    return pd.DataFrame({"STUDYID": [studyid], "SomeData": [1]})
+    if output_individual_scores:
+        return combined_output_individual_scores
 
-def get_bw_score(studyid, path_db, fake_study, use_xpt_file, master_compiledata, return_individual_scores, return_zscore_by_USUBJID):
-    return pd.DataFrame({"STUDYID": [studyid], "BWZSCORE_avg": [0.5]})
+    elif output_zscore_by_USUBJID:
+        return final_output_zscore_by_USUBJID
 
-# Add other necessary functions here...
+    else:
+        return FOUR_Liver_Score_avg
+
+
+
+
+
 
