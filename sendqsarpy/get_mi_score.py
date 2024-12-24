@@ -22,7 +22,8 @@ def get_mi_score(studyid=None,
                  return_zscore_by_USUBJID=False):
 
     # Convert studyid to string if provided
-    studyid = str(studyid) if studyid is not None else None
+    #studyid = str(studyid) if studyid is not None else None
+    studyid = str(studyid)
     path = path_db
 
     # Helper function to fetch data from SQLite database
@@ -395,8 +396,7 @@ def get_mi_score(studyid=None,
             empty_mi_score_list = {}
 
             # Add a 'STUDYID' element to the empty list with value
-            empty_mi_score_list['STUDYID'] = ScoredData_subset_HD['STUDYID'].unique().tolist()
-
+            empty_mi_score_list['STUDYID'] = ScoredData_subset_HD['STUDYID'].unique()[0] # Use the first unique value
             # Append elements from mean_col_8th_to_end
             mi_score_final_list = {**empty_mi_score_list, **mean_col_8th_to_end}
 

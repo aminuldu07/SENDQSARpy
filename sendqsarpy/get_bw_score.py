@@ -247,8 +247,8 @@ def get_bw_score(studyid=None,
 
     # Merge with ARMCD, SETCD, SEX
     # Add "ARMCD","SETCD","SEX" to "selected_df"
-    STUDYID_less_master_compiledata = master_compiledata[["USUBJID", "ARMCD", "SETCD", "SEX"]]
-    BW_df_merged_ARMCD = pd.merge(BW_df_selected_column, STUDYID_less_master_compiledata, on="USUBJID")
+    STUDYID_less_master_compile_data = master_compiledata[["USUBJID", "ARMCD", "SETCD", "SEX"]]
+    BW_df_merged_ARMCD = pd.merge(BW_df_selected_column, STUDYID_less_master_compile_data, on="USUBJID")
 
     
     # # BW z-score calculation --------------------------------------------

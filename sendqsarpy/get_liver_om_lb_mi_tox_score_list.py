@@ -6,11 +6,13 @@ Created on Sun Dec 22 07:58:03 2024
 """
 
 import pandas as pd
+import pdb  # Import the debugger
 from .get_compile_data import get_compile_data
 from .get_bw_score import get_bw_score
 from .get_livertobw_score import get_livertobw_score
 from .get_lb_score import get_lb_score
 from .get_mi_score import get_mi_score
+
 
 def get_liver_om_lb_mi_tox_score_list(
     studyid_or_studyids=None,
@@ -19,17 +21,15 @@ def get_liver_om_lb_mi_tox_score_list(
     use_xpt_file=False,
     output_individual_scores=False,
     output_zscore_by_USUBJID=False
-):
-    # Enforce mutual exclusivity: If both are TRUE, throw an error
+):  # <-- Closing parenthesis aligned with 'def'
+
+    # Set a breakpoint here to start debugging
+    # pdb.set_trace() 
+  
+  # Enforce mutual exclusivity: If both are TRUE, throw an error
     if output_individual_scores and output_zscore_by_USUBJID:
         raise ValueError("Both 'output_individual_scores' and 'output_zscore_by_USUBJID' cannot be True at the same time.")
-    
-    # if output_individual_scores:
-    #     # Initialize master DataFrames and error tracking
-    #     master_data = initialize_dataframes(output_individual_scores, output_zscore_by_USUBJID)
-    #     error_studies = []
-    
-    
+        
     if output_individual_scores:
         # Master bwzscore
 
@@ -52,7 +52,7 @@ def get_liver_om_lb_mi_tox_score_list(
         master_error_df = pd.DataFrame(columns=["STUDYID", "Block", "ErrorMessage"])
 
     elif output_zscore_by_USUBJID:
-        # Master liverToBW list
+        # Masterd liverToBW list
         master_liverToBW = []
 
         # Master LB score list
@@ -72,6 +72,7 @@ def get_liver_om_lb_mi_tox_score_list(
         FOUR_Liver_Score_avg = pd.DataFrame(columns=[
         "STUDYID", "BWZSCORE_avg", "liverToBW_avg", "LB_score_avg", "MI_score_avg"
         ])
+
 
         # Initialize an empty list to store the names of studies with errors
         error_studies = []
@@ -98,6 +99,7 @@ def get_liver_om_lb_mi_tox_score_list(
             # Set 'studyid' to None if using an XPT file; otherwise, keep the original value
             studyid = None if use_xpt_file else studyid
             
+            # Call "get_compile_data" function to get the master_compiledata
             # Call the "get_compile_data" function to get the master_compiledata
             output_get_compile_data = get_compile_data(
                 studyid=studyid,
@@ -111,9 +113,6 @@ def get_liver_om_lb_mi_tox_score_list(
 
             # Create a copy of master_compiledata for diagnostic purposes
             master_compiledata_copy = master_compiledata
-
-            # Indicate the first block succeeded
-            #first_block_success = True
             
         except Exception as e:
             # Handling errors
@@ -126,52 +125,45 @@ def get_liver_om_lb_mi_tox_score_list(
                 "ErrorMessage": [str(e)]
                 })
 
-            # Append the error information to the master_error_df
-            #master_error_df = pd.concat([master_error_df, error_block1], ignore_index=True)
-
-            # Set the flag to indicate the first block failed
-            #first_block_success = False
-            
             # Append the error to the master_error_df
             if 'master_error_df' in globals():
                 master_error_df.append(error_block1)
             else:
                 master_error_df = [error_block1]
 
-        # Set the flag to False to indicate the first block failed
-        first_block_success = False
+            # Set the flag to False to indicate the first block failed
+            first_block_success = False
 
         # Check the flag to decide whether to proceed to the next iteration of the loop
         if not first_block_success:
             # Append STUDYID to the error_studies list
-            #Error_studies.append(studyid)
             error_studies.append(studyid)
             # Skip to the next iteration
             continue
 
-        # End of master_compiledata calculation
+        # End of master_compiledata calculation-------------------------------
         
         #---------------------------------------------------------------------
         #----------------------score_accumulation_df--------------------------
         #This block for "Adding a new row for the current STUDYID in FOUR_Liver_Score"
-
         try:
             # Initialize the "FOUR_Liver_Score_avg"
             # when output_individual_scores == False and output_zscore_by_USUBJID == False
             if not output_individual_scores and not output_zscore_by_USUBJID:
-                new_row_in_four_liver_scr_avg = {
-                    "STUDYID": master_compiledata["STUDYID"].unique()[0],
-                    "BWZSCORE_avg": None,
-                    "liverToBW_avg": None,
-                    "LB_score_avg": None,
-                    "MI_score_avg": None,
-                    }
-
+                new_row_in_four_liver_scr_avg = pd.DataFrame({
+                    "STUDYID": [master_compiledata["STUDYID"].unique()[0]],
+                    "BWZSCORE_avg": [pd.NA],
+                    "liverToBW_avg": [pd.NA],
+                    "LB_score_avg": [pd.NA],
+                    "MI_score_avg": [pd.NA]
+                })
+                            
+            
             # Append the new row to FOUR_Liver_Score_avg
             if 'FOUR_Liver_Score_avg' in globals():
-                FOUR_Liver_Score_avg.append(new_row_in_four_liver_scr_avg)
+                FOUR_Liver_Score_avg = pd.concat([FOUR_Liver_Score_avg, new_row_in_four_liver_scr_avg], ignore_index=True)
             else:
-                FOUR_Liver_Score_avg = [new_row_in_four_liver_scr_avg]
+                FOUR_Liver_Score_avg = new_row_in_four_liver_scr_avg
 
         except Exception as e:
             # Handling errors of the secondary operation
@@ -190,30 +182,32 @@ def get_liver_om_lb_mi_tox_score_list(
             else:
                 master_error_df = [error_block_flscrdf]
 
-        # End of score accumulation
+        # --------------End of score accumulation---------------------------
 
-        # ------------------ Calculation of BodyWeight_zScore --------------------------
+        # ------------------ Calculation of BodyWeight_zScore --------------
         
         try:
+           
             if output_individual_scores:
                 # Set 'studyid' to None if using an XPT file, otherwise keep the original value
                 studyid = None if use_xpt_file else studyid
-
-                bwzscore_BW = get_bw_score( studyid=studyid,
-                                            path_db=path_db,
-                                            fake_study=fake_study,
-                                            use_xpt_file=use_xpt_file,
-                                            master_compiledata=master_compiledata,
-                                            return_individual_scores=True,
-                                            return_zscore_by_USUBJID=False
-                                            )
+               
+                bwzscore_BW = get_bw_score( 
+                    studyid=studyid,
+                    path_db=path_db,
+                    fake_study=fake_study,
+                    use_xpt_file=use_xpt_file,
+                    master_compiledata=master_compiledata,
+                    return_individual_scores=True,
+                    return_zscore_by_USUBJID=False
+                    )
                 # bwzscore_BW <- as.data.frame(bwzscore_BW)
                 # master_bwzscore_BW <- rbind(master_bwzscore_BW, bwzscore_BW )
 
             elif output_zscore_by_USUBJID:
                 # Set 'studyid' to None if using an XPT file, otherwise keep the original value
                 studyid = None if use_xpt_file else studyid
-
+                
                 BW_zscore_by_USUBJID_HD = get_bw_score(studyid=studyid,
                                                        path_db=path_db,
                                                        fake_study=fake_study,
@@ -225,11 +219,14 @@ def get_liver_om_lb_mi_tox_score_list(
 
                 # Convert to a pandas DataFrame if needed
                 BW_zscore_by_USUBJID_HD = pd.DataFrame(BW_zscore_by_USUBJID_HD)
-        
+                
+       
+
             else:
+                
                 # Set 'studyid' to None if using an XPT file, otherwise keep the original value
                 studyid = None if use_xpt_file else studyid
-
+                            
                 averaged_HD_BWzScore = get_bw_score(studyid=studyid,
                                                 path_db=path_db,
                                                 fake_study=fake_study,
@@ -239,19 +236,19 @@ def get_liver_om_lb_mi_tox_score_list(
                                                 return_zscore_by_USUBJID=False
                                                 )
 
-            print(averaged_HD_BWzScore)
+                print(averaged_HD_BWzScore)
+                
+                # Extract the liverToBW value for the current STUDYID
+                calculated_BWzScore_value = averaged_HD_BWzScore.loc[
+                    averaged_HD_BWzScore["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
+                    "BWZSCORE_avg"
+                    ].values[0]
 
-            # Extract the liverToBW value for the current STUDYID
-            calculated_BWzScore_value = averaged_HD_BWzScore.loc[
-            averaged_HD_BWzScore["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
-            "BWZSCORE_avg"
-            ].values[0]
-
-            # Update the BWZSCORE_avg in FOUR_Liver_Score_avg for the current STUDYID
-            FOUR_Liver_Score_avg.loc[
-            FOUR_Liver_Score_avg["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
-            "BWZSCORE_avg"
-            ] = calculated_BWzScore_value
+                # Update the BWZSCORE_avg in FOUR_Liver_Score_avg for the current STUDYID
+                FOUR_Liver_Score_avg.loc[
+                    FOUR_Liver_Score_avg["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
+                    "BWZSCORE_avg"
+                    ] = calculated_BWzScore_value
 
         except Exception as e:
             # Handle errors
@@ -267,7 +264,7 @@ def get_liver_om_lb_mi_tox_score_list(
             # Append to master_error_df
             if 'master_error_df' in globals():
                 master_error_df.append(error_block2)
-            else:
+            else:   
                 master_error_df = [error_block2]
 
 # --------------------------- "OM_DATA" (Liver Organ to Body Weight zScore) -----
@@ -294,10 +291,10 @@ def get_liver_om_lb_mi_tox_score_list(
                 master_liverToBW = pd.concat([master_liverToBW, HD_liver_zscore_df])
 
             elif output_zscore_by_USUBJID:
+                pdb.set_trace()
                 # Set 'studyid' to None if using an XPT file, otherwise keep the original value
                 studyid = None if use_xpt_file else studyid
                 
-               
                 bwzscore_BW = get_bw_score(studyid=studyid,
                                            path_db=path_db,
                                            fake_study=fake_study,
@@ -324,8 +321,25 @@ def get_liver_om_lb_mi_tox_score_list(
 
                 # Append to master_liverToBW using study identifier
                 master_liverToBW[str(liverTOBW_study_identifier)] = liverTOBW_zscore_by_USUBJID_HD
+                # Initialize master_liverToBW as an empty dictionary
+master_liverToBW = {}
+
+# Extract the STUDYID from the DataFrame
+liverTOBW_study_identifier = liverTOBW_zscore_by_USUBJID_HD["STUDYID"].unique()[0]
+
+# If the STUDYID is not in the dictionary, initialize it as a list
+if str(liverTOBW_study_identifier) not in master_liverToBW:
+    master_liverToBW[str(liverTOBW_study_identifier)] = []
+
+# Append the DataFrame to the list corresponding to the STUDYID key
+master_liverToBW[str(liverTOBW_study_identifier)].append(liverTOBW_zscore_by_USUBJID_HD)
+
+# Optionally print the result to inspect the final structure
+print(master_liverToBW)
+
 
             else:
+                
                 # When neither output_individual_scores nor output_zscore_by_USUBJID is True
                 bwzscore_BW = get_bw_score(studyid=studyid,
                                            path_db=path_db,
@@ -355,7 +369,7 @@ def get_liver_om_lb_mi_tox_score_list(
                     liverToBW_df["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
                     "liverToBW_avg"
                     ].values[0]
-
+                
                 # Update the liverToBW_avg in FOUR_Liver_Score_avg
                 print(calculated_liverToBW_value)
                 FOUR_Liver_Score_avg.loc[
@@ -496,6 +510,7 @@ def get_liver_om_lb_mi_tox_score_list(
                 master_mi_score[str(mi_study_identifier)] = MI_score_by_USUBJID_HD
 
             else:
+                
                 # Get averaged MI score
                 averaged_MI_score = get_mi_score(studyid=studyid,
                                                  path_db=path_db,
@@ -505,7 +520,7 @@ def get_liver_om_lb_mi_tox_score_list(
                                                  return_individual_scores=False,
                                                  return_zscore_by_USUBJID=False
                                                  )
-
+                
                 # Extract the MI score value for the current STUDYID
                 calculated_MI_value = averaged_MI_score.loc[
                 averaged_MI_score["STUDYID"] == master_compiledata["STUDYID"].unique()[0],
@@ -526,13 +541,13 @@ def get_liver_om_lb_mi_tox_score_list(
                 "ErrorMessage": str(e)
                 }
 
-        # Append the error to master_error_df
-        if 'master_error_df' in globals():
-            master_error_df = pd.concat([master_error_df, pd.DataFrame([error_block5])])
-        else:
-            master_error_df = pd.DataFrame([error_block5])
+            # Append the error to master_error_df
+            if 'master_error_df' in globals():
+                master_error_df = pd.concat([master_error_df, pd.DataFrame([error_block5])])
+            else:
+                master_error_df = pd.DataFrame([error_block5])
 
-
+    
     if output_individual_scores:
             # Perform a full join (merge) to keep all rows from each data frame
             combined_output_individual_scores = master_liverToBW.merge(
@@ -569,9 +584,5 @@ def get_liver_om_lb_mi_tox_score_list(
 
     else:
         return FOUR_Liver_Score_avg
-
-
-
-
 
 
