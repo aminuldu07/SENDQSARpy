@@ -26,8 +26,8 @@ lb_mi_litb_score = get_liver_om_lb_mi_tox_score_list(
     path_db=db_path,
     fake_study=False,
     use_xpt_file=False,
-    output_individual_scores=False,
-    output_zscore_by_USUBJID=True
+    output_individual_scores=True,
+    output_zscore_by_USUBJID=False
 )
 
 #print(lb_mi_litb_score)  # Observe the result

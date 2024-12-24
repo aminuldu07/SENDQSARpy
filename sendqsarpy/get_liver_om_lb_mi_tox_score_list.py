@@ -53,16 +53,19 @@ def get_liver_om_lb_mi_tox_score_list(
 
     elif output_zscore_by_USUBJID:
         # Masterd liverToBW list
-        master_liverToBW = []
+        #master_liverToBW = []
+        
+        # 1. Initialize an empty dictionary
+        master_liverToBW = {}
 
         # Master LB score list
-        master_lb_score = []
+        master_lb_score = {}
 
         # Master MI score list
-        master_mi_score = []
+        master_mi_score = {}
 
         # Initialize an empty list to store the names of studies with errors
-        error_studies = []
+        error_studies = {}
 
         # Initialize the master error DataFrame to store the details of errors
         master_error_df = pd.DataFrame(columns=["STUDYID", "Block", "ErrorMessage"])
@@ -291,7 +294,7 @@ def get_liver_om_lb_mi_tox_score_list(
                 master_liverToBW = pd.concat([master_liverToBW, HD_liver_zscore_df])
 
             elif output_zscore_by_USUBJID:
-                pdb.set_trace()
+                
                 # Set 'studyid' to None if using an XPT file, otherwise keep the original value
                 studyid = None if use_xpt_file else studyid
                 
@@ -317,25 +320,20 @@ def get_liver_om_lb_mi_tox_score_list(
 
                 # Convert to pandas DataFrame
                 liverTOBW_zscore_by_USUBJID_HD = pd.DataFrame(liverTOBW_zscore_by_USUBJID_HD)
+                
+                # Extract the STUDYID from the DataFrame
                 liverTOBW_study_identifier = liverTOBW_zscore_by_USUBJID_HD["STUDYID"].unique()[0]
-
-                # Append to master_liverToBW using study identifier
+                
+                # 4. Store the DataFrame in the dictionary, using the study identifier as the key
                 master_liverToBW[str(liverTOBW_study_identifier)] = liverTOBW_zscore_by_USUBJID_HD
-                # Initialize master_liverToBW as an empty dictionary
-master_liverToBW = {}
 
-# Extract the STUDYID from the DataFrame
-liverTOBW_study_identifier = liverTOBW_zscore_by_USUBJID_HD["STUDYID"].unique()[0]
-
-# If the STUDYID is not in the dictionary, initialize it as a list
-if str(liverTOBW_study_identifier) not in master_liverToBW:
-    master_liverToBW[str(liverTOBW_study_identifier)] = []
-
-# Append the DataFrame to the list corresponding to the STUDYID key
-master_liverToBW[str(liverTOBW_study_identifier)].append(liverTOBW_zscore_by_USUBJID_HD)
-
-# Optionally print the result to inspect the final structure
-print(master_liverToBW)
+                # # If the STUDYID is not in the dictionary, initialize it as a list
+                # if str(liverTOBW_study_identifier) not in master_liverToBW:
+                #     master_liverToBW[str(liverTOBW_study_identifier)] = []
+                
+                # # Append the DataFrame to the list corresponding to the STUDYID key
+                # master_liverToBW[str(liverTOBW_study_identifier)].append(liverTOBW_zscore_by_USUBJID_HD)
+                
 
 
             else:
@@ -546,7 +544,8 @@ print(master_liverToBW)
                 master_error_df = pd.concat([master_error_df, pd.DataFrame([error_block5])])
             else:
                 master_error_df = pd.DataFrame([error_block5])
-
+    
+   
     
     if output_individual_scores:
             # Perform a full join (merge) to keep all rows from each data frame
