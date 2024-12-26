@@ -19,6 +19,7 @@ def get_bw_score(studyid=None,
                  return_individual_scores=False, 
                  return_zscore_by_USUBJID=False):
     
+    
     studyid = str(studyid)
     path = path_db
 

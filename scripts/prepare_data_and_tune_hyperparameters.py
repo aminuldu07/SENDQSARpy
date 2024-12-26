@@ -20,7 +20,7 @@ def prepare_data_and_tune_hyperparameters(scores_df,
                                           holdback=0.75,
                                           Undersample=False,
                                           hyperparameter_tuning=False,
-                                          error_correction_method=None): 
+                                          error_correction_method=None): # # Choose: "Flip" or "Prune" or "None"
     # Prepare input data
     scores_df = scores_df.copy()
     studyid_metadata = studyid_metadata.copy()

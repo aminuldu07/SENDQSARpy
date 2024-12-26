@@ -4,7 +4,6 @@ Created on Sun Dec 22 07:58:03 2024
 
 @author: MdAminulIsla.Prodhan
 """
-
 import pandas as pd
 import pdb  # Import the debugger
 from .get_compile_data import get_compile_data
@@ -23,14 +22,18 @@ def get_liver_om_lb_mi_tox_score_list(
     output_zscore_by_USUBJID=False
 ):  # <-- Closing parenthesis aligned with 'def'
 
+    
+
     # Set a breakpoint here to start debugging
-    # pdb.set_trace() 
+    #pdb.set_trace()
   
   # Enforce mutual exclusivity: If both are TRUE, throw an error
     if output_individual_scores and output_zscore_by_USUBJID:
         raise ValueError("Both 'output_individual_scores' and 'output_zscore_by_USUBJID' cannot be True at the same time.")
         
     if output_individual_scores:
+        
+    
         # Master bwzscore
 
         # Master liverToBW DataFrame
@@ -192,6 +195,7 @@ def get_liver_om_lb_mi_tox_score_list(
         try:
            
             if output_individual_scores:
+                #pdb.set_trace() 
                 # Set 'studyid' to None if using an XPT file, otherwise keep the original value
                 studyid = None if use_xpt_file else studyid
                
@@ -546,7 +550,7 @@ def get_liver_om_lb_mi_tox_score_list(
                 master_error_df = pd.DataFrame([error_block5])
     
    
-    
+    #pdb.set_trace()
     if output_individual_scores:
             # Perform a full join (merge) to keep all rows from each data frame
             combined_output_individual_scores = master_liverToBW.merge(
@@ -574,7 +578,7 @@ def get_liver_om_lb_mi_tox_score_list(
     else:
         # Round all columns from the second column onward to two decimal places
         FOUR_Liver_Score_avg.iloc[:, 1:] = FOUR_Liver_Score_avg.iloc[:, 1:].round(2)
-
+    print("output individual scores")
     if output_individual_scores:
         return combined_output_individual_scores
 

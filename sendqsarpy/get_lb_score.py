@@ -19,7 +19,8 @@ def get_lb_score(studyid=None,
                  master_compiledata=None, 
                  return_individual_scores=False, 
                  return_zscore_by_USUBJID=False):
-
+    
+    
     studyid = str(studyid)
     path = path_db
 

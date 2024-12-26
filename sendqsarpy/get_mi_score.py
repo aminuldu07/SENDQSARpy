@@ -156,9 +156,19 @@ def get_mi_score(studyid=None,
 
     MIData_cleaned_SColmn = MIData_cleaned[['USUBJID', 'MISTRESC', 'MISEV']].copy()
 
-    # Reshape the data (pivot the dataframe)
+    # Copy the dataframe
+    MIData_cleaned_SColmn_fDecasting = MIData_cleaned_SColmn.copy()
 
-    MIData_cleaned_SColmn = MIData_cleaned.pivot_table(index='USUBJID', columns='MISTRESC', values='MISEV', aggfunc='first')
+    # Remove duplicate rows
+    MIData_cleaned_SColmn_fDecasting = MIData_cleaned_SColmn_fDecasting.drop_duplicates()
+
+    # Remove duplicate rows based on specific columns ("USUBJID" and "MISTRESC")
+    MIData_cleaned_SColmn_fDecasting = MIData_cleaned_SColmn_fDecasting.drop_duplicates(subset=["USUBJID", "MISTRESC"])
+
+    # Reshape the data (pivot the dataframe)
+    MIData_cleaned_SColmn = MIData_cleaned_SColmn_fDecasting.pivot_table(index='USUBJID', columns='MISTRESC', values='MISEV',
+                                                       aggfunc='first')
+    #MIData_cleaned_SColmn = MIData_cleaned.pivot_table(index='USUBJID', columns='MISTRESC', values='MISEV', aggfunc='first')
 
     # Fill NAs with "0"
     MIData_cleaned_SColmn.fillna('0', inplace=True)
@@ -436,6 +446,7 @@ def get_mi_score(studyid=None,
             # Create an empty DataFrame
             averaged_MI_score = pd.DataFrame()  
     # Return based on return_individual_scores
+    print("calculation has been done")
     if return_individual_scores:
         # Return the DataFrame for individual scores
         return mi_score_final_list_df  
