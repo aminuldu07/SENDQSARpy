@@ -35,3 +35,9 @@ fake80_liver_scores = get_liver_om_lb_mi_tox_score_list(
 )
 column_harmonized_liverscr_df = get_col_harmonized_scores_df(liver_score_data_frame = fake80_liver_scores,
                                                               round_values = True)
+
+print(column_harmonized_liverscr_df)
+
+# #Enable Python Console Execution
+# import code
+# code.interact(local=locals())

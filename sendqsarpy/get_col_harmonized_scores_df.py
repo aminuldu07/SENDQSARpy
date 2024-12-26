@@ -6,15 +6,6 @@ import pdb  # Import the debugger
 
 def get_col_harmonized_scores_df(liver_score_data_frame, 
                                  round_values=False):
-    
-    print("Debugging starts...")
-    print("Before Debugger")
-    #pdb.set_trace() 
-    #breakpoint()  # or pdb.set_trace()
-    print("After Debugger")
-
-    #pdb.set_trace()
-    
     # Create a copy of the input DataFrame
     liver_scores = liver_score_data_frame.copy()
 
@@ -31,31 +22,15 @@ def get_col_harmonized_scores_df(liver_score_data_frame,
     remaining_columns = [col for i, col in enumerate(liver_scores.columns) if i not in findings2replace_index]
 
     # Convert to uppercase and remove duplicates
-    fn2replace = list(set([col.upper() for col in remaining_columns]))
-
-    #breakpoint()
-    
     # Identify unique column names without periods
-    #fn2replace = set(liver_scores.columns.str.upper()) - {liver_scores.columns[i].upper() for i in findings2replace_index}
+    fn2replace = list(set([col.upper() for col in remaining_columns]))
 
     # Store column names with periods
     f2replace = [liver_scores.columns[i] for i in findings2replace_index ]
 
     # Remove specific columns from processing
-    #removeIndex = [i for i, val in enumerate(fn2replace) if val in ['STUDYID', 'UNREMARKABLE', 'THIKENING', 'POSITIVE']]
-
-    # Remove specific columns from processing
     remove_columns = ['STUDYID', 'UNREMARKABLE', 'THIKENING', 'POSITIVE']
     fn2replace = [item for item in fn2replace if item not in remove_columns]
-    # remove_columns = set(['STUDYID', 'UNREMARKABLE', 'THIKENING', 'POSITIVE'])
-    # fn2replace = list(set(fn2replace) - remove_columns)
-
-    # # Harmonize synonym columns
-    # for finding in fn2replace:
-    #     synonyms = [col for col in liver_scores.columns if finding in col.upper()]
-    #     for synonym in synonyms:
-    #         indices = liver_scores[synonym] > 0
-    #         liver_scores.loc[indices, finding] = liver_scores.loc[indices, [finding, synonym]].max(axis=1)
 
     for finding in fn2replace:
         # Find synonyms using case-insensitive regex
@@ -78,11 +53,6 @@ def get_col_harmonized_scores_df(liver_score_data_frame,
     # Rename "liver_scores" to "Data"
     Data = liver_scores
 
-    print(Data.shape)
-    #breakpoint()
-    # Remove synonym columns
-    #liver_scores.drop(columns=[liver_scores.columns[i] for i in findings2replace_index], inplace=True)
-
     # Remove unwanted endpoints
     remove_endpoints = {'INFILTRATE', 'UNREMARKABLE', 'THIKENING', 'POSITIVE'}
     liver_scores = liver_scores.drop(columns=[col for col in liver_scores.columns if col in remove_endpoints], errors='ignore')
@@ -103,8 +73,7 @@ def get_col_harmonized_scores_df(liver_score_data_frame,
         # Apply ceiling to histo_index columns
         for col in histo_index:
             liver_scores[col] = liver_scores[col].apply(np.ceil)
-    
-    #breakpoint()
+
     # Reorder columns by their sum, descending
     column_sums = liver_scores.iloc[:, 1:].sum(axis=0).sort_values(ascending=False)
     reordered_columns = [liver_scores.columns[0]] + column_sums.index.tolist()
