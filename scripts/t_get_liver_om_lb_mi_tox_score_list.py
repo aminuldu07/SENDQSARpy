@@ -1,38 +1,4 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Dec 22 15:36:52 2024
 
-@author: MdAminulIsla.Prodhan
-"""
-import sys
-import os
-#import pdb  # Import the pdb debugger
-
-# Add the top-level directory (where sendqsarpy is located) to the system path
-#sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# Now you can import the function from your package
-from sendqsarpy.get_liver_om_lb_mi_tox_score_list import get_liver_om_lb_mi_tox_score_list
-from sendqsarpy.get_col_harmonized_scores_df  import get_col_harmonized_scores_df
-# Set the parameters you want to test
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/DATABASES/TestDB.db"
-
-#studyid_or_studyids = 
-studyid_or_studyids = ["5003635"]
-
-# Call the function you want to debug
-lb_mi_litb_score = get_liver_om_lb_mi_tox_score_list(
-    studyid_or_studyids=studyid_or_studyids,
-    path_db=db_path,
-    fake_study=False,
-    use_xpt_file=False,
-    output_individual_scores=True,
-    output_zscore_by_USUBJID=False
-)
-
-#print(lb_mi_litb_score)  # Observe the result
-
-#-------------------------------------------------------------------
 import sqlite3
 import pandas as pd
 from sendqsarpy.get_liver_om_lb_mi_tox_score_list import get_liver_om_lb_mi_tox_score_list
@@ -43,6 +9,7 @@ path_db = 'C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/DATABASES/fake
 
 # 2. Establish a connection to the database
 connection = sqlite3.connect(path_db)
+
 
 # 3. Execute the SQL query to retrieve the STUDYID column from the 'dm' table
 query = "SELECT STUDYID FROM dm"
@@ -68,6 +35,10 @@ fake80_liver_scores = get_liver_om_lb_mi_tox_score_list(
     output_individual_scores=True,
     output_zscore_by_USUBJID=False
 )
+print(fake80_liver_scores.shape)
+
+
+
 
 # # Apply the function
 # column_harmonized_liverscr_df = get_col_harmonized_scores_df(

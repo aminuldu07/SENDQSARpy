@@ -48,3 +48,6 @@ Thumbs.db
 # Ignore unnecessary files (e.g., logs, poetry lock files)
 Makefile
 *.bat
+
+# ignore any csv file 
+*.csv

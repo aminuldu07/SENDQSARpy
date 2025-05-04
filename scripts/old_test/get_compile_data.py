@@ -411,31 +411,31 @@ def get_compile_data(studyid=None, path_db=None, fake_study=False, use_xpt_file=
 #Example usage
 
 # Call the function
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/fake_merged_liver_not_liver.db"
+db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/DATABASES/fake_merged_liver_not_liver.db"
 fake_T_xpt_F_compile_data = get_compile_data(studyid="28738",
                                              path_db = db_path,
                                              fake_study=True,
                                              use_xpt_file=False)
 
-# Call the function
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
-fake_T_xpt_T_compile_data = get_compile_data(studyid=None,
-                                             path_db = db_path,
-                                             fake_study =True, 
-                                             use_xpt_file=True)
-
-# Call the function
-db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
-real_sqlite_compile_data = get_compile_data(studyid="876",
-                                            path_db = db_path, 
-                                            fake_study=False,
-                                            use_xpt_file=False)
-
-
-# Call the function
-db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
-real_xpt_compile_data = get_compile_data(studyid=None,
-                                         path_db = db_path,
-                                         fake_study =False,
-                                         use_xpt_file=True)
+# # Call the function
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/single_fake_xpt_folder/FAKE28738"
+# fake_T_xpt_T_compile_data = get_compile_data(studyid=None,
+#                                              path_db = db_path,
+#                                              fake_study =True,
+#                                              use_xpt_file=True)
+#
+# # Call the function
+# db_path = "C:\\Users\\MdAminulIsla.Prodhan\\OneDrive - FDA\\Documents\\TestDB.db"
+# real_sqlite_compile_data = get_compile_data(studyid="876",
+#                                             path_db = db_path,
+#                                             fake_study=False,
+#                                             use_xpt_file=False)
+#
+#
+# # Call the function
+# db_path = "C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/2023-2024_projects/FAKE_DATABASES/real_xpt_dir/IND051292_1017-3581"
+# real_xpt_compile_data = get_compile_data(studyid=None,
+#                                          path_db = db_path,
+#                                          fake_study =False,
+#                                          use_xpt_file=True)
 

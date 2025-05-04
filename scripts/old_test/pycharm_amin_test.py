@@ -4,9 +4,9 @@ import pandas as pd
 from sendqsarpy.get_mi_score import get_mi_score
 from sendqsarpy.get_liver_om_lb_mi_tox_score_list import get_liver_om_lb_mi_tox_score_list
 from sendqsarpy.get_col_harmonized_scores_df  import get_col_harmonized_scores_df
-from sendqsarpy.prepare_data_and_tune_hyperparameters import prepare_data_and_tune_hyperparameters
+#from sendqsarpy.prepare_data_and_tune_hyperparameters import prepare_data_and_tune_hyperparameters
 
-import pdb 
+#import pdb 
 # 1. Define the path to the SQLite database
 path_db = 'C:/Users/MdAminulIsla.Prodhan/OneDrive - FDA/Documents/DATABASES/fake_merged_liver_not_liver.db'
 studyid = "10663"
